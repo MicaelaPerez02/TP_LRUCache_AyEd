@@ -39,6 +39,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="TDALista.h" />
+		<Unit filename="TDAListaDoble.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="TDAListaDoble.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
