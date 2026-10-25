@@ -42,7 +42,8 @@ int agregar_lrucache(tCache *pc, void *d, size_t tam)
 
             pc->ce--;
             encontrado=1;
-        } else
+        }
+        else
         {
             p=&(*p)->sig;
         }
@@ -63,11 +64,13 @@ int agregar_lrucache(tCache *pc, void *d, size_t tam)
 
 int borrar_lrucache(tCache *pc, void *d)
 {
+    tLista *p;
     tNodo *elim;
-    tLista *p = &pc->lista;
 
-    if(!pc || !pc->lista)
-        return SIN_DATOS;
+    if(!pc)
+        return PUNTERO_INVALIDO;
+
+    p=&pc->lista;
 
     while(*p)
     {
@@ -86,5 +89,66 @@ int borrar_lrucache(tCache *pc, void *d)
 
         p=&(*p)->sig;
     }
+
     return NO_ENCONTRADO;
+}
+
+int obtener_lrucache(tCache *pc, void *d, size_t tam)
+{
+    tLista *p; // La dirección de la lista, sin el & tengo el primer nodo, no puedo modificar a donde a punta la lista como tal
+    tNodo *aux;
+
+    if(!pc)
+        return PUNTERO_INVALIDO;
+
+    p=&pc->lista;
+
+    // Mientras tenga nodos (pc->lista)
+    // Y no haya encontrado la clave (*p)->info = pc->lista->info
+    while(*p && pc->cmpClaves( (*p)->info, d) != 0)
+    {
+        p = &(*p)->sig; // Puntero a la caja sig. del nodo actual
+    }
+
+    if(*p) // Si lo encontre
+    {
+        memcpy(d, (*p)->info, MINIMO(tam, (*p)->tamInfo));
+
+        // Desengancho
+        aux=*p;
+        *p=(*p)->sig;
+
+        // Engancho al inicio
+        aux->sig = pc->lista;
+        pc->lista=aux;
+    }
+    else
+    {
+        return NO_ENCONTRADO;
+    }
+
+    return EXITO;
+}
+
+void recorrer_lrucache(tCache *pc, Accion ac)
+{
+    tNodo *p;
+
+    if(!pc)
+        return;
+
+    p=pc->lista;
+
+    while(p)
+    {
+        ac(p->info);
+        p=p->sig;
+    }
+}
+
+void mostrar(const void *c1)
+{
+    int aux=*(int *)c1;
+
+    printf("%d \t",aux);
 }

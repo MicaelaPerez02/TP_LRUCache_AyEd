@@ -31,6 +31,10 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="LotesPrueba.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="LotesPrueba.h" />
 		<Unit filename="TDALista.c">
 			<Option compilerVar="CC" />
 		</Unit>
