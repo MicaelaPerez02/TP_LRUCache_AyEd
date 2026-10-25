@@ -22,14 +22,14 @@ int crearArchivoPosteos(char *nombreArchivo)
     FILE *fpPosteos;
 
     tPosteo vecPosteos[]={
-        {1, "¿Tu sistema va lento? La caché LRU acelera el procesamiento guardando los datos más accedidos. ¡Optimizá tu memoria!"},
-        {2, "En nuestro TDA, el dato menos usado recientemente se descarta primero al llenarse la caché garantizando eficiencia pura."},
-        {3, "Implementar una caché genérica en C requiere dominar punteros dobles y malloc. ¡Clave validar para evitar fugas!"},
-        {4, "Combinamos listas doblemente enlazadas y árboles binarios índice para maximizar el rendimiento de las búsquedas."},
-        {5, "Preparando la defensa del TP de Algoritmos. ¡Estructurar bien los datos marca la diferencia a la hora de aprobar!"},
+        {0, "¿Tu sistema va lento? La caché LRU acelera el procesamiento guardando los datos más accedidos. ¡Optimizá tu memoria!"},
+        {1, "En nuestro TDA, el dato menos usado recientemente se descarta primero al llenarse la caché garantizando eficiencia pura."},
+        {2, "Implementar una caché genérica en C requiere dominar punteros dobles y malloc. ¡Clave validar para evitar fugas!"},
+        {3, "Combinamos listas doblemente enlazadas y árboles binarios índice para maximizar el rendimiento de las búsquedas."},
+        {4, "Preparando la defensa del TP de Algoritmos. ¡Estructurar bien los datos marca la diferencia a la hora de aprobar!"},
     };
 
-    if(abrirArchivo(&fpPosteos, "posteos.bin", "wb", MOSTRAR_ERROR_APERTURA) )
+    if(abrirArchivo(&fpPosteos, nombreArchivo, "wb", MOSTRAR_ERROR_APERTURA) )
         return ERROR_APERTURA_ARCHIVO;
 
     if(fpPosteos)
@@ -64,12 +64,12 @@ int crearArchivoUsuariosFeed(char *nombreArchivo)
     FILE *fpUsuariosFeed;
 
     tUsuarioFeed vecUsuarioFeed[]={
-        {"Micaela Perez", {1,3,5} },
-        {"Lionel Messi", {1,4} },
-        {"Javier Milei", {2,3} }
+        {"Micaela Perez", {0,2,4} },
+        {"Lionel Messi", {0,3} },
+        {"Javier Milei", {1,2} }
     };
 
-    if(abrirArchivo(&fpUsuariosFeed, "usuariofeed.bin", "wb", MOSTRAR_ERROR_APERTURA) )
+    if(abrirArchivo(&fpUsuariosFeed, nombreArchivo, "wb", MOSTRAR_ERROR_APERTURA) )
         return ERROR_APERTURA_ARCHIVO;
 
     if(fpUsuariosFeed)
