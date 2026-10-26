@@ -39,6 +39,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="TDAArbol.h" />
+		<Unit filename="TDAIndice.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="TDAIndice.h" />
 		<Unit filename="TDALista.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -54,6 +58,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="t_lru_cache.h" />
+		<Unit filename="t_lru_cache_mejorada.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="t_lru_cache_mejorada.h" />
 		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

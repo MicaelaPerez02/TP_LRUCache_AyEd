@@ -19,19 +19,19 @@ typedef struct sNodo{
     struct sNodo *sig;
 } tNodo;
 
-typedef tNodo *tLista;
+typedef tNodo *tListaDoble;
 
-void crearListaDoble(tLista *p);
-void vaciarListaDoble(tLista *p);
-int esListaDobleVacia(const tLista *p);
-int esListaDobleLlena(const tLista *p, size_t tam);
-int insertarAlInicio(tLista *p, const void *d, size_t tam);
-int insertarAlFinal(tLista *p, const void *d, size_t tam);
-void mostrarDeIzqADer(const tLista *p, void(*mostrar)(const void *));
-void mostrarDeDerAIzq(const tLista *p, void(*mostrar)(const void *));
+void crearListaDoble(tListaDoble *p);
+void vaciarListaDoble(tListaDoble *p);
+int esListaDobleVacia(const tListaDoble *p);
+int esListaDobleLlena(const tListaDoble *p, size_t tam);
+int insertarAlInicioListaDoble(tListaDoble *p, const void *d, size_t tam);
+int insertarAlFinalListaDoble(tListaDoble *p, const void *d, size_t tam);
+void mostrarDeIzqADer(const tListaDoble *p, void(*mostrar)(const void *));
+void mostrarDeDerAIzq(const tListaDoble *p, void(*mostrar)(const void *));
 
-int moverAlInicioListaDoble(tLista *p, tNodo *nodo);
-int eliminarNodoListaDoble(tLista *p, tNodo *nodo);
-int sacarUltimoListaDoble(tLista *p, void *d, size_t tam);
+int moverAlInicioListaDoble(tListaDoble *p, tNodo *nodo);
+int eliminarNodoListaDoble(tListaDoble *p, tNodo *nodo);
+int sacarUltimoListaDoble(tListaDoble *p, void *d, size_t tam);
 
 #endif // TDALISTADOBLE_H_INCLUDED

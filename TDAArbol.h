@@ -11,7 +11,9 @@
 #define DUPLICADO -3
 #define EXITO 1
 
-#define MINIMO(X, Y)((X)<=(Y) ? (X) : (Y))
+#ifndef MINIMO
+#define MINIMO(X,Y)( (X)<=(Y)? (X):(Y) )
+#endif
 
 typedef struct sNodoArbol
 {
@@ -28,10 +30,9 @@ void crearArbolBinBusq(tArbolBinBusq *p);
 void vaciarArbolBinBusq(tArbolBinBusq *p);
 int insertarRecArbolBinBusq(tArbolBinBusq *p, const void *d, size_t tam, Cmp cmp);
 tNodoArbol** buscarRecElemArbolBinBusq(tArbolBinBusq *p, const void *d, Cmp cmp);
-
 tNodoArbol **menorNodoArbolBinBusq(const tArbolBinBusq *p);
 tNodoArbol **mayorNodoArbolBinBusq(const tArbolBinBusq *p);
-
+int eliminarRaizArbolBinBusq(tArbolBinBusq *p);
 int eliminarRecArbolBinBusq(tArbolBinBusq *p, void *d, size_t tam, Cmp cmp);
 unsigned alturaArbolBin(tArbolBinBusq *p);
 

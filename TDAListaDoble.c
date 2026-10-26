@@ -1,16 +1,16 @@
 #include "TDAListaDoble.h"
 
-void crearListaDoble(tLista *p)
+void crearListaDoble(tListaDoble *p)
 {
     *p=NULL;
 }
 
-int esListaDobleVacia(const tLista *p)
+int esListaDobleVacia(const tListaDoble *p)
 {
     return *p==NULL;
 }
 
-int esListaDobleLlena(const tLista *p, size_t tam)
+int esListaDobleLlena(const tListaDoble *p, size_t tam)
 {
     void *aux=malloc(sizeof(tNodo));
     void *info=malloc(tam);
@@ -21,7 +21,7 @@ int esListaDobleLlena(const tLista *p, size_t tam)
     return aux==NULL || info==NULL;
 }
 
-int insertarAlInicio(tLista *p, const void *d, size_t tam)
+int insertarAlInicioListaDoble(tListaDoble *p, const void *d, size_t tam)
 {
     tNodo *nue, *act=*p;
 
@@ -53,7 +53,7 @@ int insertarAlInicio(tLista *p, const void *d, size_t tam)
     return EXITO;
 }
 
-int insertarAlFinal(tLista *p, const void *d, size_t tam)
+int insertarAlFinalListaDoble(tListaDoble *p, const void *d, size_t tam)
 {
     tNodo *nue, *act=*p;
 
@@ -87,7 +87,7 @@ int insertarAlFinal(tLista *p, const void *d, size_t tam)
     return EXITO;
 }
 
-void mostrarDeIzqADer(const tLista *p, void(*mostrar)(const void *))
+void mostrarDeIzqADer(const tListaDoble *p, void(*mostrar)(const void *))
 {
     tNodo *act=*p;
 
@@ -107,7 +107,7 @@ void mostrarDeIzqADer(const tLista *p, void(*mostrar)(const void *))
     }
 }
 
-void mostrarDeDerAIzq(const tLista *p, void(*mostrar)(const void *))
+void mostrarDeDerAIzq(const tListaDoble *p, void(*mostrar)(const void *))
 {
     tNodo *act=*p;
 
@@ -127,37 +127,39 @@ void mostrarDeDerAIzq(const tLista *p, void(*mostrar)(const void *))
     }
 }
 
-int sacarUltimoListaDoble(tLista *p, void *d, size_t tam)
+int sacarUltimoListaDoble(tListaDoble *p, void *d, size_t tam)
 {
     tNodo *act=*p;
 
-    if(act)
-    {
-        while(act->sig)
-            act=act->sig;
 
-        memcpy(d, act->info, MINIMO(act->tamInfo, tam));
-
-        if(act->ant)
+        if(act)
         {
-            act->ant->sig=NULL;
-            *p=act->ant;
+            while(act->sig)
+                act=act->sig;
+
+            if(d) // d es opcional en este caso
+                memcpy(d, act->info, MINIMO(act->tamInfo, tam));
+
+            if(act->ant)
+            {
+                act->ant->sig=NULL;
+                *p=act->ant;
+            } else
+            {
+                *p=NULL; // Si no tengo anterior, no tengo mas nodos disponibles
+            }
+
+            free(act->info);
+            free(act);
         } else
         {
-            *p=NULL; // Si no tengo anterior, no tengo mas nodos disponibles
+            return SIN_DATOS;
         }
-
-        free(act->info);
-        free(act);
-    } else
-    {
-        return SIN_DATOS;
-    }
 
     return EXITO;
 }
 
-int eliminarNodoListaDoble(tLista *p, tNodo *nodo)
+int eliminarNodoListaDoble(tListaDoble *p, tNodo *nodo)
 {
     if(!nodo)
         return SIN_DATOS;
@@ -181,7 +183,7 @@ int eliminarNodoListaDoble(tLista *p, tNodo *nodo)
     return EXITO;
 }
 
-int moverAlInicioListaDoble(tLista *p, tNodo *nodo)
+int moverAlInicioListaDoble(tListaDoble *p, tNodo *nodo)
 {
     if(nodo && *p)
     {
@@ -206,7 +208,7 @@ int moverAlInicioListaDoble(tLista *p, tNodo *nodo)
     return EXITO;
 }
 
-void vaciarListaDoble(tLista *p)
+void vaciarListaDoble(tListaDoble *p)
 {
     tNodo *aux, *act=*p;
 
