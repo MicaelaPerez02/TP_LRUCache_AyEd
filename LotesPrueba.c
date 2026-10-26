@@ -1,109 +1,178 @@
 #include "LotesPrueba.h"
 
-int abrirArchivo(FILE **fp, const char *nombreArchivo, const char *modoApertura, int mostrarError)
+int aleatorioHasta(int limite)
 {
-    *fp=fopen(nombreArchivo, modoApertura);
+    int numero = (rand() % TOPE_RAND) * TOPE_RAND + rand() % TOPE_RAND;
 
-    if(! *fp)
+    return numero % limite;
+}
+
+int estaEnVector(const int *vec, int cantidad, int id)
+{
+    int posicion;
+
+    for(posicion = 0; posicion < cantidad; posicion++)
+        if(vec[posicion] == id)
+            return 1;
+
+    return 0;
+}
+
+void llenarVectorDistinto(int *vec, int cantidad)
+{
+    int cargados = 0;
+    int id;
+
+    while(cargados < cantidad)
     {
-        if(mostrarError)
+        id = aleatorioHasta(CANT_POSTEOS);
+
+        if(!estaEnVector(vec, cargados, id))
         {
-            printf("Ocurrio un error al abrir el archivo %s en modo %s. \n", nombreArchivo, modoApertura);
+            vec[cargados] = id;
+            cargados++;
         }
-        return ERROR_APERTURA_ARCHIVO;
-    } else
-        printf("Archivo %s en modo %s abierto correctamente. \n", nombreArchivo, modoApertura);
-
-    return EXITO_APERTURA_ARCHIVO;
-}
-
-int crearArchivoPosteos(char *nombreArchivo)
-{
-    FILE *fpPosteos;
-
-    tPosteo vecPosteos[]={
-        {0, "¿Tu sistema va lento? La caché LRU acelera el procesamiento guardando los datos más accedidos. ¡Optimizá tu memoria!"},
-        {1, "En nuestro TDA, el dato menos usado recientemente se descarta primero al llenarse la caché garantizando eficiencia pura."},
-        {2, "Implementar una caché genérica en C requiere dominar punteros dobles y malloc. ¡Clave validar para evitar fugas!"},
-        {3, "Combinamos listas doblemente enlazadas y árboles binarios índice para maximizar el rendimiento de las búsquedas."},
-        {4, "Preparando la defensa del TP de Algoritmos. ¡Estructurar bien los datos marca la diferencia a la hora de aprobar!"},
-    };
-
-    if(abrirArchivo(&fpPosteos, nombreArchivo, "wb", MOSTRAR_ERROR_APERTURA) )
-        return ERROR_APERTURA_ARCHIVO;
-
-    if(fpPosteos)
-    {
-        fwrite(vecPosteos, sizeof(vecPosteos), 1, fpPosteos);
-        fclose(fpPosteos);
-        return EXITO_CREACION_ARCHIVO;
     }
-
-    return ERROR_CREACION_ARCHIVO;
 }
 
-void mostrarArchivoPosteos(char *nombreArchivo)
+void llenarFeedConcentrado(int *feed, const int *populares)
 {
-    tPosteo post;
-    FILE *fp;
+    int cargados = 0;
+    int id;
 
-    fp=fopen(nombreArchivo, "rb");
-    if(!fp)
-        return;
-
-    while( fread(&post, sizeof(tPosteo), 1, fp) )
+    while(cargados < POSTEOS_POR_FEED)
     {
-        printf("ID: %d \t POST: %s \n", post.id, post.texto);
-    }
+        if(aleatorioHasta(PORCENTAJE_MAXIMO) < PORCENTAJE_POPULARES)
+            id = populares[aleatorioHasta(CANT_POPULARES)];
+        else
+            id = aleatorioHasta(CANT_POSTEOS);
 
-    fclose(fp);
-}
-
-int crearArchivoUsuariosFeed(char *nombreArchivo)
-{
-    FILE *fpUsuariosFeed;
-
-    tUsuarioFeed vecUsuarioFeed[]={
-        {"Micaela Perez", {0,2,4} },
-        {"Lionel Messi", {0,3} },
-        {"Javier Milei", {1,2} }
-    };
-
-    if(abrirArchivo(&fpUsuariosFeed, nombreArchivo, "wb", MOSTRAR_ERROR_APERTURA) )
-        return ERROR_APERTURA_ARCHIVO;
-
-    if(fpUsuariosFeed)
-    {
-        fwrite(vecUsuarioFeed, sizeof(vecUsuarioFeed), 1, fpUsuariosFeed);
-        fclose(fpUsuariosFeed);
-        return EXITO_CREACION_ARCHIVO;
-    }
-
-    return ERROR_CREACION_ARCHIVO;
-}
-
-void mostrarArchivoUsuarioFeed(char *nombreArchivo)
-{
-    tUsuarioFeed userPost;
-    FILE *fp;
-    int i;
-
-    fp=fopen(nombreArchivo, "rb");
-    if(!fp)
-        return;
-
-    while( fread(&userPost, sizeof(tUsuarioFeed), 1, fp) )
-    {
-        printf("USUARIO: %s \t", userPost.usuario);
-
-        i=0;
-        while(userPost.feed[i] != 0)
+        if(!estaEnVector(feed, cargados, id))
         {
-            printf("\tPOSTEO ID: %d \n", userPost.feed[i]);
-            i++;
+            feed[cargados] = id;
+            cargados++;
+        }
+    }
+}
+
+/* Cada acceso del archivo tiene su propio tramo de ids. Como los tramos van
+   en orden, los ids crecen en TODO el archivo, no solo dentro de cada feed. */
+void llenarFeedOrdenado(int *feed, int indiceUsuario)
+{
+    int tramo = CANT_POSTEOS / (CANT_USUARIOS * POSTEOS_POR_FEED);
+    int posicion;
+    int numeroAcceso;
+
+    for(posicion = 0; posicion < POSTEOS_POR_FEED; posicion++)
+    {
+        numeroAcceso = indiceUsuario * POSTEOS_POR_FEED + posicion;
+        feed[posicion] = numeroAcceso * tramo + aleatorioHasta(tramo);
+    }
+}
+
+int crearArchivoPosteos(const char *nombreArchivo)
+{
+    FILE *pf = fopen(nombreArchivo, "wb");
+    tPosteo posteo;
+    int numeroRegistro;
+
+    if(!pf)
+        return GEN_ERROR;
+
+    for(numeroRegistro = 0; numeroRegistro < CANT_POSTEOS; numeroRegistro++)
+    {
+        posteo.id = numeroRegistro;     /* el id coincide con el numero de registro */
+        sprintf(posteo.texto, "Posteo numero %d: texto de prueba para la simulacion", numeroRegistro);
+
+        if(fwrite(&posteo, sizeof(tPosteo), 1, pf) != 1)
+        {
+            fclose(pf);
+            return GEN_ERROR;
         }
     }
 
-    fclose(fp);
+    fclose(pf);
+    return GEN_OK;
 }
 
+int crearArchivoFeeds(const char *nombreArchivo, int tipoLote)
+{
+    FILE *pf = fopen(nombreArchivo, "wb");
+    tUsuarioFeed usuarioFeed;
+    int populares[CANT_POPULARES];
+    int indiceUsuario;
+
+    if(!pf)
+        return GEN_ERROR;
+
+    llenarVectorDistinto(populares, CANT_POPULARES);
+
+    for(indiceUsuario = 0; indiceUsuario < CANT_USUARIOS; indiceUsuario++)
+    {
+        sprintf(usuarioFeed.usuario, "usuario%d", indiceUsuario + 1);
+
+        if(tipoLote == LOTE_CONCENTRADO)
+            llenarFeedConcentrado(usuarioFeed.feed, populares);
+        else if(tipoLote == LOTE_DISPERSO)
+            llenarVectorDistinto(usuarioFeed.feed, POSTEOS_POR_FEED);
+        else
+            llenarFeedOrdenado(usuarioFeed.feed, indiceUsuario);
+
+        if(fwrite(&usuarioFeed, sizeof(tUsuarioFeed), 1, pf) != 1)
+        {
+            fclose(pf);
+            return GEN_ERROR;
+        }
+    }
+
+    fclose(pf);
+    return GEN_OK;
+}
+
+void mostrarArchivoPosteos(const char *nombreArchivo, int limite)
+{
+    FILE *pf = fopen(nombreArchivo, "rb");
+    tPosteo posteo;
+    int mostrados = 0;
+
+    if(!pf)
+    {
+        printf("No se pudo abrir %s\n", nombreArchivo);
+        return;
+    }
+
+    while(mostrados < limite && fread(&posteo, sizeof(tPosteo), 1, pf) == 1)
+    {
+        printf("%d | %s\n", posteo.id, posteo.texto);
+        mostrados++;
+    }
+
+    fclose(pf);
+}
+
+void mostrarArchivoFeeds(const char *nombreArchivo, int limite)
+{
+    FILE *pf = fopen(nombreArchivo, "rb");
+    tUsuarioFeed usuarioFeed;
+    int mostrados = 0;
+    int posicion;
+
+    if(!pf)
+    {
+        printf("No se pudo abrir %s\n", nombreArchivo);
+        return;
+    }
+
+    while(mostrados < limite && fread(&usuarioFeed, sizeof(tUsuarioFeed), 1, pf) == 1)
+    {
+        printf("%s |", usuarioFeed.usuario);
+
+        for(posicion = 0; posicion < POSTEOS_POR_FEED; posicion++)
+            printf(" %d", usuarioFeed.feed[posicion]);
+
+        printf("\n");
+        mostrados++;
+    }
+
+    fclose(pf);
+}

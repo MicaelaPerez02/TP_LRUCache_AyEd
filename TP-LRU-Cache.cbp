@@ -35,6 +35,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="LotesPrueba.h" />
+		<Unit filename="TDAArbol.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="TDAArbol.h" />
 		<Unit filename="TDALista.c">
 			<Option compilerVar="CC" />
 		</Unit>
