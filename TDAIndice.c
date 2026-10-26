@@ -1,76 +1,57 @@
 #include "TDAIndice.h"
 
-int cmpEntradas(const void *a, const void *b)
+int compararClaveIndice(const void *a, const void *b)
 {
-    const tEntradaIndice *entA = a;
-    const tEntradaIndice *entB = b;
+    const tIndice *idxA = a;
+    const tIndice *idxB = b;
 
-    return entA->cmp(entA->clave, entB->clave);
+    return idxA->cmp(idxA->clave, idxB->clave);
 }
 
-void armarEntrada(tEntradaIndice *entrada, const void *clave, tNodo *nodo, Cmp cmp)
+int insertarEnIndice(tArbolBinBusq *pa, tNodo *nodo, Cmp cmp)
 {
-    entrada->clave = clave;
-    entrada->nodo = nodo;
-    entrada->cmp = cmp;
+    tIndice idx;
+
+    idx.clave = nodo->info;
+    idx.nodo = nodo;
+    idx.cmp = cmp;
+
+    return insertarRecArbolBinBusq(pa, &idx, sizeof(tIndice), compararClaveIndice);
 }
 
-void crearIndice(tIndice *pi, Cmp cmpClaves)
+tNodo *buscarEnIndice(tArbolBinBusq *pa, const void *clave, Cmp cmp)
 {
-    crearArbolBinBusq(&pi->arbol);
-    pi->cmpClaves = cmpClaves;
-}
-
-void vaciarIndice(tIndice *pi)
-{
-    vaciarArbolBinBusq(&pi->arbol);
-}
-
-int insertarEnIndice(tIndice *pi, tNodo *nodo)
-{
-    tEntradaIndice entrada;
-
-    armarEntrada(&entrada, nodo->info, nodo, pi->cmpClaves);
-
-    return insertarRecArbolBinBusq(&pi->arbol, &entrada, sizeof(tEntradaIndice), cmpEntradas);
-}
-
-tNodo *buscarEnIndice(const tIndice *pi, const void *clave)
-{
-    tEntradaIndice entrada;
+    tIndice idx;
     tArbolBinBusq *caja;
 
-    armarEntrada(&entrada, clave, NULL, pi->cmpClaves);
+    idx.clave = clave;
+    idx.cmp = cmp;
 
-    caja = buscarRecElemArbolBinBusq((tArbolBinBusq *)&pi->arbol, &entrada, cmpEntradas);
+    caja = buscarRecElemArbolBinBusq(pa, &idx, compararClaveIndice);
 
     if(!caja)
         return NULL;
 
-    return ((tEntradaIndice *)(*caja)->info)->nodo;
+    return ((tIndice *)(*caja)->info)->nodo;
 }
 
-tNodo *sacarDeIndice(tIndice *pi, const void *clave)
+tNodo *sacarDeIndice(tArbolBinBusq *pa, const void *clave, Cmp cmp)
 {
-    tEntradaIndice entrada;
+    tIndice idx;
     tArbolBinBusq *caja;
     tNodo *nodo;
 
-    armarEntrada(&entrada, clave, NULL, pi->cmpClaves);
+    idx.clave = clave;
+    idx.cmp = cmp;
 
-    caja = buscarRecElemArbolBinBusq(&pi->arbol, &entrada, cmpEntradas);
+    caja = buscarRecElemArbolBinBusq(pa, &idx, compararClaveIndice);
 
     if(!caja)
         return NULL;
 
-    nodo = ((tEntradaIndice *)(*caja)->info)->nodo;     // lo guardo ANTES de borrar la entrada
+    nodo = ((tIndice *)(*caja)->info)->nodo; // lo guardo ANTES de borrar el nodo del arbol
 
     eliminarRaizArbolBinBusq(caja);
 
     return nodo;
-}
-
-unsigned alturaIndice(tIndice *pi)
-{
-    return alturaArbolBin(&pi->arbol);
 }

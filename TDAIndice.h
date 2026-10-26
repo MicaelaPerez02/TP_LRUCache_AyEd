@@ -4,29 +4,17 @@
 #include "TDAListaDoble.h"
 #include "TDAArbol.h"
 
-#ifndef NO_ENCONTRADO
-#define NO_ENCONTRADO -3
-#endif
-
-typedef struct
-{
-    tArbolBinBusq arbol;
-    Cmp cmpClaves;
-} tIndice;
-
 typedef struct
 {
     const void *clave;
     tNodo *nodo;
     Cmp cmp;
-} tEntradaIndice;
+} tIndice;
 
-void crearIndice(tIndice *pi, Cmp cmpClaves);
-void vaciarIndice(tIndice *pi);
+int compararClaveIndice(const void *a, const void *b);
 
-int insertarEnIndice(tIndice *pi, tNodo *nodo);
-tNodo *buscarEnIndice(const tIndice *pi, const void *clave);
-tNodo *sacarDeIndice(tIndice *pi, const void *clave);
-unsigned alturaIndice(tIndice *pi);
+int insertarEnIndice(tArbolBinBusq *pa, tNodo *nodo, Cmp cmp);
+tNodo *buscarEnIndice(tArbolBinBusq *pa, const void *clave, Cmp cmp);
+tNodo *sacarDeIndice(tArbolBinBusq *pa, const void *clave, Cmp cmp);
 
 #endif // TDAINDICE_H_INCLUDED

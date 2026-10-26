@@ -6,8 +6,9 @@ void crear_lrucache_mejorada(tCacheMejorada *pc, unsigned capMax, Cmp cmp)
         return;
 
     crearListaDoble(&pc->listaDoble);
-    crearIndice(&pc->indice, cmp);
+    crearArbolBinBusq(&pc->arbol);
     pc->capMax=capMax;
+    pc->cmpClaves=cmp;
     pc->ce=0;
 }
 
@@ -17,9 +18,18 @@ void vaciar_lrucache_mejorada(tCacheMejorada *pc)
         return;
 
     vaciarListaDoble(&pc->listaDoble);
-    vaciarIndice(&pc->indice);
+    vaciarArbolBinBusq(&pc->arbol);
     pc->capMax=0;
+    pc->cmpClaves=NULL;
     pc->ce=0;
+}
+
+unsigned altura_lrucache_mejorada(tCacheMejorada *pc)
+{
+    if(!pc)
+        return 0;
+
+    return alturaArbolBin(&pc->arbol);
 }
 
 int agregar_lrucache_mejorada(tCacheMejorada *pc, void *d, size_t tam)
@@ -29,8 +39,8 @@ int agregar_lrucache_mejorada(tCacheMejorada *pc, void *d, size_t tam)
     if(!pc)
         return PUNTERO_INVALIDO;
 
-    // Si la clave ya existia, saco el dato viejo primero del indice y despues de la lista
-    nodoDup = sacarDeIndice(&pc->indice, d);
+    // Si la clave ya existia, saco el dato viejo primero del indice, despues de la lista
+    nodoDup = sacarDeIndice(&pc->arbol, d, pc->cmpClaves);
 
     if(nodoDup)
     {
@@ -44,8 +54,8 @@ int agregar_lrucache_mejorada(tCacheMejorada *pc, void *d, size_t tam)
 
     nodoNuevo = pc->listaDoble;
 
-    // Inserto en el indice tambien
-    if(insertarEnIndice(&pc->indice, nodoNuevo) != EXITO)
+    // Lo sumo al indice
+    if(insertarEnIndice(&pc->arbol, nodoNuevo, pc->cmpClaves) != EXITO)
     {
         eliminarNodoListaDoble(&pc->listaDoble, nodoNuevo);
         return SIN_MEMORIA;
@@ -53,14 +63,14 @@ int agregar_lrucache_mejorada(tCacheMejorada *pc, void *d, size_t tam)
 
     pc->ce++;
 
-    // Si desborda, elimino el ultimo
-    if( pc->ce > pc->capMax)
+    // Si desborda, sale el ultimo
+    if((size_t)pc->ce > pc->capMax)
     {
         ultimo = pc->listaDoble;
         while(ultimo->sig)
             ultimo = ultimo->sig;
 
-        sacarDeIndice(&pc->indice, ultimo->info);      // la clave se lee ANTES de liberar el nodo
+        sacarDeIndice(&pc->arbol, ultimo->info, pc->cmpClaves); // la clave se lee ANTES de liberar el nodo
         eliminarNodoListaDoble(&pc->listaDoble, ultimo);
         pc->ce--;
     }

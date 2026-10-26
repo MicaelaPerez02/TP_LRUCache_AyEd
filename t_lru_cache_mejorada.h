@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "TDAListaDoble.h"
+#include "TDAArbol.h"
 #include "TDAIndice.h"
 
 #ifndef PUNTERO_INVALIDO
@@ -13,13 +14,15 @@
 typedef struct
 {
     tListaDoble listaDoble;
-    tIndice indice;
+    tArbolBinBusq arbol;
     size_t capMax;
     int ce;
+    Cmp cmpClaves;
 } tCacheMejorada;
 
 void crear_lrucache_mejorada(tCacheMejorada *pc, unsigned capMax, Cmp cmp);
 int agregar_lrucache_mejorada(tCacheMejorada *pc, void *d, size_t tam);
 void vaciar_lrucache_mejorada(tCacheMejorada *pc);
+unsigned altura_lrucache_mejorada(tCacheMejorada *pc);
 
 #endif // T_LRU_CACHE_MEJORADA_H_INCLUDED
