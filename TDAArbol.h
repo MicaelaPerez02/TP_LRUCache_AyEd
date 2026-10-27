@@ -10,21 +10,25 @@
 #ifndef MINIMO
 #define MINIMO(X, Y)((X)<=(Y) ? (X) : (Y))
 #endif
+
 typedef struct sNodoArbol
 {
     void *info;
     size_t tamInfo;
     struct sNodoArbol *izq, *der;
 } tNodoArbol;
+
 typedef tNodoArbol *tArbolBinBusq;
 typedef int(*Cmp)(const void *, const void *);
+
 void crearArbolBinBusq(tArbolBinBusq *p);
 void vaciarArbolBinBusq(tArbolBinBusq *p);
 int insertarRecArbolBinBusq(tArbolBinBusq *p, const void *d, size_t tam, Cmp cmp);
-tNodoArbol** buscarRecElemArbolBinBusq(tArbolBinBusq *p, const void *d, Cmp cmp);
-tNodoArbol **menorNodoArbolBinBusq(const tArbolBinBusq *p);
-tNodoArbol **mayorNodoArbolBinBusq(const tArbolBinBusq *p);
 int eliminarRaizArbolBinBusq(tArbolBinBusq *p);
 int eliminarRecArbolBinBusq(tArbolBinBusq *p, void *d, size_t tam, Cmp cmp);
 unsigned alturaArbolBin(tArbolBinBusq *p);
+tNodoArbol** buscarRecElemArbolBinBusq(tArbolBinBusq *p, const void *d, Cmp cmp);
+tNodoArbol **menorNodoArbolBinBusq(const tArbolBinBusq *p);
+tNodoArbol **mayorNodoArbolBinBusq(const tArbolBinBusq *p);
+
 #endif

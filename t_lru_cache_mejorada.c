@@ -122,10 +122,6 @@ int borrar_lrucache_mejorada(tCacheMejorada *pc, void *d)
 
 /* ---------------------------- auxiliares del arbol ---------------------------- */
 
-/* Es el cmp que recibe el ARBOL. Siempre lo llama cmp(d, info_del_nodo):
-   - a (d)    = la variable local tBusqueda que arme yo (clave a buscar/insertar + cmp del usuario)
-   - b (info) = la entrada tClaveNodo que ya esta guardada en el arbol
-   Comparo las CLAVES con el cmp del usuario */
 int compararClaveNodo(const void *a, const void *b)
 {
     const tBusqueda *busq = a;

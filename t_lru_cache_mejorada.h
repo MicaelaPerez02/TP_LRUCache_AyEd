@@ -14,15 +14,12 @@
 #define NO_ENCONTRADO -3
 #endif
 
-/* Lo que guarda cada nodo del arbol: SOLO la clave y el nodo de la lista donde esta el dato */
 typedef struct
 {
-    const void *clave;      // direccion de la clave: vive dentro del dato del nodo de la lista
-    tNodo *nodo;            // el nodo de la lista que tiene ese dato
+    const void *clave;
+    tNodo *nodo;
 } tClaveNodo;
 
-/* Variable LOCAL que se arma en cada insertar/buscar/sacar: la entrada + el cmp del usuario.
-   Es lo que le paso al arbol como "d", asi compararClaveNodo tiene el cmp sin guardarlo en el arbol */
 typedef struct
 {
     tClaveNodo entrada;
@@ -31,9 +28,9 @@ typedef struct
 
 typedef struct
 {
-    tListaDoble listaDoble;     // los datos, ordenados por uso: pri = mas reciente, ult = menos reciente
-    tArbolBinBusq arbol;        // clave -> nodo de la lista, ordenado por clave
-    size_t capMax;              // cantidad max de ELEMENTOS
+    tListaDoble listaDoble;
+    tArbolBinBusq arbol;
+    size_t capMax;
     int ce;
     Cmp cmpClaves;
 } tCacheMejorada;
@@ -43,6 +40,6 @@ int agregar_lrucache_mejorada(tCacheMejorada *pc, void *d, size_t tam);
 int obtener_lrucache_mejorada(tCacheMejorada *pc, void *d, size_t tam);
 int borrar_lrucache_mejorada(tCacheMejorada *pc, void *d);
 void vaciar_lrucache_mejorada(tCacheMejorada *pc);
-unsigned altura_lrucache_mejorada(tCacheMejorada *pc);     // altura del arbol (la pide la consigna)
+unsigned altura_lrucache_mejorada(tCacheMejorada *pc);
 
 #endif // T_LRU_CACHE_MEJORADA_H_INCLUDED

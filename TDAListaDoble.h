@@ -21,7 +21,6 @@ typedef struct sNodo
     struct sNodo *sig;
 } tNodo;
 
-/* Igual que tCola del apunte de Cola dinamica: dos punteros FIJOS, uno al primero y otro al ultimo */
 typedef struct
 {
     tNodo *pri;
