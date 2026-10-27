@@ -1,12 +1,5 @@
 #include "t_lru_cache_mejorada.h"
 
-/* Auxiliares: son las unicas que tocan el arbol */
-int compararClaveNodo(const void *a, const void *b);
-int insertarClaveEnArbol(tCacheMejorada *pc, tNodo *nodo);
-tNodo *buscarNodoPorClave(tCacheMejorada *pc, const void *clave);
-tNodo *sacarClaveDelArbol(tCacheMejorada *pc, const void *clave);
-
-
 void crear_lrucache_mejorada(tCacheMejorada *pc, unsigned capMax, Cmp cmp)
 {
     if(!pc)
@@ -41,7 +34,7 @@ unsigned altura_lrucache_mejorada(tCacheMejorada *pc)
 
 int agregar_lrucache_mejorada(tCacheMejorada *pc, void *d, size_t tam)
 {
-    tNodo *nodoViejo;
+    tNodoDoble *nodoViejo;
 
     if(!pc)
         return PUNTERO_INVALIDO;
@@ -81,7 +74,7 @@ int agregar_lrucache_mejorada(tCacheMejorada *pc, void *d, size_t tam)
 
 int obtener_lrucache_mejorada(tCacheMejorada *pc, void *d, size_t tam)
 {
-    tNodo *nodo;
+    tNodoDoble *nodo;
 
     if(!pc)
         return PUNTERO_INVALIDO;
@@ -100,7 +93,7 @@ int obtener_lrucache_mejorada(tCacheMejorada *pc, void *d, size_t tam)
 
 int borrar_lrucache_mejorada(tCacheMejorada *pc, void *d)
 {
-    tNodo *nodo;
+    tNodoDoble *nodo;
 
     if(!pc)
         return PUNTERO_INVALIDO;
@@ -130,7 +123,7 @@ int compararClaveNodo(const void *a, const void *b)
     return busq->cmp(busq->entrada.clave, guardada->clave);
 }
 
-int insertarClaveEnArbol(tCacheMejorada *pc, tNodo *nodo)
+int insertarClaveEnArbol(tCacheMejorada *pc, tNodoDoble *nodo)
 {
     tBusqueda busq;
 
@@ -141,7 +134,7 @@ int insertarClaveEnArbol(tCacheMejorada *pc, tNodo *nodo)
     return insertarRecArbolBinBusq(&pc->arbol, &busq, sizeof(tClaveNodo), compararClaveNodo);
 }
 
-tNodo *buscarNodoPorClave(tCacheMejorada *pc, const void *clave)
+tNodoDoble *buscarNodoPorClave(tCacheMejorada *pc, const void *clave)
 {
     tBusqueda busq;
     tArbolBinBusq *caja;
@@ -157,11 +150,11 @@ tNodo *buscarNodoPorClave(tCacheMejorada *pc, const void *clave)
     return ((tClaveNodo *)(*caja)->info)->nodo;
 }
 
-tNodo *sacarClaveDelArbol(tCacheMejorada *pc, const void *clave)
+tNodoDoble *sacarClaveDelArbol(tCacheMejorada *pc, const void *clave)
 {
     tBusqueda busq;
     tArbolBinBusq *caja;
-    tNodo *nodo;
+    tNodoDoble *nodo;
 
     busq.entrada.clave = clave;
     busq.cmp = pc->cmpClaves;

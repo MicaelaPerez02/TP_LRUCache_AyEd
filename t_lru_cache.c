@@ -18,6 +18,9 @@ void crear_lrucache(tCache *pc, unsigned capMax, Cmp cmp)
 
 void vaciar_lrucache(tCache *pc)
 {
+    if(!pc)
+        return;
+
     vaciarLista(&pc->lista);
     pc->capMax=0;
     pc->cmpClaves=NULL;
@@ -26,9 +29,14 @@ void vaciar_lrucache(tCache *pc)
 
 int agregar_lrucache(tCache *pc, void *d, size_t tam)
 {
-    tLista *p = &pc->lista;
+    tLista *p;
     tNodo *elim;
     int encontrado=0;
+
+    if(!pc)
+        return PUNTERO_INVALIDO;
+
+    p=&pc->lista;
 
     while(*p && !encontrado)
     {
@@ -144,11 +152,4 @@ void recorrer_lrucache(tCache *pc, Accion ac)
         ac(p->info);
         p=p->sig;
     }
-}
-
-void mostrar(const void *c1)
-{
-    int aux=*(int *)c1;
-
-    printf("%d \t",aux);
 }

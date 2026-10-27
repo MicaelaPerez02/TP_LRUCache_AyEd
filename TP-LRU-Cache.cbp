@@ -39,10 +39,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="TDAArbol.h" />
-		<Unit filename="TDAIndice.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="TDAIndice.h" />
 		<Unit filename="TDALista.c">
 			<Option compilerVar="CC" />
 		</Unit>

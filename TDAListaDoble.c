@@ -13,7 +13,7 @@ int esListaDobleVacia(const tListaDoble *p)
 
 int insertarAlInicioListaDoble(tListaDoble *p, const void *d, size_t tam)
 {
-    tNodo *nue = malloc(sizeof(tNodo));
+    tNodoDoble *nue = malloc(sizeof(tNodoDoble));
 
     if(!nue)
         return SIN_MEMORIA;
@@ -41,7 +41,7 @@ int insertarAlInicioListaDoble(tListaDoble *p, const void *d, size_t tam)
     return EXITO;
 }
 
-int eliminarNodoListaDoble(tListaDoble *p, tNodo *nodo)
+int eliminarNodoListaDoble(tListaDoble *p, tNodoDoble *nodo)
 {
     if(!nodo)
         return SIN_DATOS;
@@ -63,7 +63,7 @@ int eliminarNodoListaDoble(tListaDoble *p, tNodo *nodo)
     return EXITO;
 }
 
-int moverAlInicioListaDoble(tListaDoble *p, tNodo *nodo)
+int moverAlInicioListaDoble(tListaDoble *p, tNodoDoble *nodo)
 {
     if(!nodo)
         return SIN_DATOS;
@@ -90,7 +90,7 @@ int moverAlInicioListaDoble(tListaDoble *p, tNodo *nodo)
 
 int sacarUltimoListaDoble(tListaDoble *p, void *d, size_t tam)
 {
-    tNodo *elim = p->ult;
+    tNodoDoble *elim = p->ult;
 
     if(!elim)
         return SIN_DATOS;
@@ -103,7 +103,7 @@ int sacarUltimoListaDoble(tListaDoble *p, void *d, size_t tam)
 
 void vaciarListaDoble(tListaDoble *p)
 {
-    tNodo *elim;
+    tNodoDoble *elim;
 
     while(p->pri)
     {

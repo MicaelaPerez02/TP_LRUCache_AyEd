@@ -19,19 +19,19 @@ typedef struct sNodo
     size_t tamInfo;
     struct sNodo *ant;
     struct sNodo *sig;
-} tNodo;
+} tNodoDoble;
 
 typedef struct
 {
-    tNodo *pri;
-    tNodo *ult;
+    tNodoDoble *pri;
+    tNodoDoble *ult;
 } tListaDoble;
 
 void crearListaDoble(tListaDoble *p);
 int esListaDobleVacia(const tListaDoble *p);
 int insertarAlInicioListaDoble(tListaDoble *p, const void *d, size_t tam);
-int moverAlInicioListaDoble(tListaDoble *p, tNodo *nodo);
-int eliminarNodoListaDoble(tListaDoble *p, tNodo *nodo);
+int moverAlInicioListaDoble(tListaDoble *p, tNodoDoble *nodo);
+int eliminarNodoListaDoble(tListaDoble *p, tNodoDoble *nodo);
 int sacarUltimoListaDoble(tListaDoble *p, void *d, size_t tam);
 void vaciarListaDoble(tListaDoble *p);
 

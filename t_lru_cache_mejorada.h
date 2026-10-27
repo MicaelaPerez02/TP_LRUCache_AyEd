@@ -17,7 +17,7 @@
 typedef struct
 {
     const void *clave;
-    tNodo *nodo;
+    tNodoDoble *nodo;
 } tClaveNodo;
 
 typedef struct
@@ -41,5 +41,11 @@ int obtener_lrucache_mejorada(tCacheMejorada *pc, void *d, size_t tam);
 int borrar_lrucache_mejorada(tCacheMejorada *pc, void *d);
 void vaciar_lrucache_mejorada(tCacheMejorada *pc);
 unsigned altura_lrucache_mejorada(tCacheMejorada *pc);
+
+// Auxiliares que tocan el arbol
+int compararClaveNodo(const void *a, const void *b);
+int insertarClaveEnArbol(tCacheMejorada *pc, tNodoDoble *nodo);
+tNodoDoble *buscarNodoPorClave(tCacheMejorada *pc, const void *clave);
+tNodoDoble *sacarClaveDelArbol(tCacheMejorada *pc, const void *clave);
 
 #endif // T_LRU_CACHE_MEJORADA_H_INCLUDED
