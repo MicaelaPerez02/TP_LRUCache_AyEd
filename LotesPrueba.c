@@ -35,7 +35,7 @@ void llenarVectorDistinto(int *vec, int cantidad)
     }
 }
 
-void llenarFeedConcentrado(int *feed, const int *populares)
+void llenarFeedConcentrado(int *feed, const int *populares, int cantPopulares)
 {
     int cargados = 0;
     int id;
@@ -43,7 +43,7 @@ void llenarFeedConcentrado(int *feed, const int *populares)
     while(cargados < POSTEOS_POR_FEED)
     {
         if(aleatorioHasta(PORCENTAJE_MAXIMO) < PORCENTAJE_POPULARES)
-            id = populares[aleatorioHasta(CANT_POPULARES)];
+            id = populares[aleatorioHasta(cantPopulares)];
         else
             id = aleatorioHasta(CANT_POSTEOS);
 
@@ -57,9 +57,9 @@ void llenarFeedConcentrado(int *feed, const int *populares)
 
 /* Cada acceso del archivo tiene su propio tramo de ids. Como los tramos van
    en orden, los ids crecen en TODO el archivo, no solo dentro de cada feed. */
-void llenarFeedOrdenado(int *feed, int indiceUsuario)
+void llenarFeedOrdenado(int *feed, int indiceUsuario, int cantUsuarios)
 {
-    int tramo = CANT_POSTEOS / (CANT_USUARIOS * POSTEOS_POR_FEED);
+    int tramo = CANT_POSTEOS / (cantUsuarios * POSTEOS_POR_FEED);
     int posicion;
     int numeroAcceso;
 
@@ -81,7 +81,7 @@ int crearArchivoPosteos(const char *nombreArchivo)
 
     for(numeroRegistro = 0; numeroRegistro < CANT_POSTEOS; numeroRegistro++)
     {
-        posteo.id = numeroRegistro;     /* el id coincide con el numero de registro */
+        posteo.id = numeroRegistro; /* el id coincide con el numero de registro */
         sprintf(posteo.texto, "Posteo numero %d: texto de prueba para la simulacion", numeroRegistro);
 
         if(fwrite(&posteo, sizeof(tPosteo), 1, pf) != 1)
@@ -95,28 +95,37 @@ int crearArchivoPosteos(const char *nombreArchivo)
     return GEN_OK;
 }
 
-int crearArchivoFeeds(const char *nombreArchivo, int tipoLote)
+int crearArchivoFeeds(const char *nombreArchivo, int tipoLote, int cantUsuarios, int cantPopulares)
 {
-    FILE *pf = fopen(nombreArchivo, "wb");
+    FILE *pf;
     tUsuarioFeed usuarioFeed;
-    int populares[CANT_POPULARES];
+    int populares[MAX_POPULARES];
     int indiceUsuario;
+
+    if(cantPopulares > MAX_POPULARES)
+        return GEN_ERROR;
+
+    /* en el ordenado cada acceso necesita al menos un id propio */
+    if(tipoLote == LOTE_ORDENADO && cantUsuarios * POSTEOS_POR_FEED > CANT_POSTEOS)
+        return GEN_ERROR;
+
+    pf = fopen(nombreArchivo, "wb");
 
     if(!pf)
         return GEN_ERROR;
 
-    llenarVectorDistinto(populares, CANT_POPULARES);
+    llenarVectorDistinto(populares, cantPopulares);
 
-    for(indiceUsuario = 0; indiceUsuario < CANT_USUARIOS; indiceUsuario++)
+    for(indiceUsuario = 0; indiceUsuario < cantUsuarios; indiceUsuario++)
     {
-        sprintf(usuarioFeed.usuario, "usuario%d", indiceUsuario + 1);
+        sprintf(usuarioFeed.usuario, "Usuario numero %d de la red social Tweener", indiceUsuario + 1);
 
         if(tipoLote == LOTE_CONCENTRADO)
-            llenarFeedConcentrado(usuarioFeed.feed, populares);
+            llenarFeedConcentrado(usuarioFeed.feed, populares, cantPopulares);
         else if(tipoLote == LOTE_DISPERSO)
             llenarVectorDistinto(usuarioFeed.feed, POSTEOS_POR_FEED);
         else
-            llenarFeedOrdenado(usuarioFeed.feed, indiceUsuario);
+            llenarFeedOrdenado(usuarioFeed.feed, indiceUsuario, cantUsuarios);
 
         if(fwrite(&usuarioFeed, sizeof(tUsuarioFeed), 1, pf) != 1)
         {
