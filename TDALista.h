@@ -9,7 +9,9 @@
 #define SIN_MEMORIA -1
 #define SIN_DATOS -2
 
-#define MINIMO(X,Y)( (X)<=(Y) ? (X) : (Y) )
+#ifndef MINIMO
+#define MINIMO(X, Y)((X)<=(Y) ? (X) : (Y))
+#endif
 
 typedef struct sNodo
 {
