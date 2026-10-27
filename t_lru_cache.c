@@ -1,10 +1,5 @@
 #include "t_lru_cache.h"
 
-int CmpXClave(const void *c1, const void *c2)
-{
-    return *(int *)c1 - *(int *)c2;
-}
-
 void crear_lrucache(tCache *pc, unsigned capMax, Cmp cmp)
 {
     if(!pc)
@@ -152,4 +147,12 @@ void recorrer_lrucache(tCache *pc, Accion ac)
         ac(p->info);
         p=p->sig;
     }
+}
+
+int CmpXClave(const void *c1, const void *c2)
+{
+    int a = *(const int *)c1;
+    int b = *(const int *)c2;
+
+    return (a > b) - (a < b);
 }

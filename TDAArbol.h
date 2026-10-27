@@ -11,6 +11,11 @@
 #define MINIMO(X, Y)((X)<=(Y) ? (X) : (Y))
 #endif
 
+#ifndef CMP_DEFINIDO
+#define CMP_DEFINIDO
+typedef int (*Cmp)(const void *, const void *);
+#endif
+
 typedef struct sNodoArbol
 {
     void *info;
@@ -19,8 +24,6 @@ typedef struct sNodoArbol
 } tNodoArbol;
 
 typedef tNodoArbol *tArbolBinBusq;
-typedef int(*Cmp)(const void *, const void *);
-
 void crearArbolBinBusq(tArbolBinBusq *p);
 void vaciarArbolBinBusq(tArbolBinBusq *p);
 int insertarRecArbolBinBusq(tArbolBinBusq *p, const void *d, size_t tam, Cmp cmp);

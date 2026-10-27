@@ -13,12 +13,12 @@
 #define MINIMO(X,Y)( (X)<=(Y)? (X):(Y) )
 #endif
 
-typedef struct sNodo
+typedef struct sNodoDoble
 {
     void *info;
     size_t tamInfo;
-    struct sNodo *ant;
-    struct sNodo *sig;
+    struct sNodoDoble *ant;
+    struct sNodoDoble *sig;
 } tNodoDoble;
 
 typedef struct

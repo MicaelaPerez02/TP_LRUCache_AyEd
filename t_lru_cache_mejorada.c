@@ -98,9 +98,6 @@ int borrar_lrucache_mejorada(tCacheMejorada *pc, void *d)
     if(!pc)
         return PUNTERO_INVALIDO;
 
-    if(esListaDobleVacia(&pc->listaDoble))
-        return SIN_DATOS;
-
     nodo = sacarClaveDelArbol(pc, d);
 
     if(!nodo)
@@ -111,7 +108,6 @@ int borrar_lrucache_mejorada(tCacheMejorada *pc, void *d)
 
     return EXITO;
 }
-
 
 /* ---------------------------- auxiliares del arbol ---------------------------- */
 
