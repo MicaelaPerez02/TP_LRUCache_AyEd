@@ -224,3 +224,82 @@ void simularCaso(const char *titulo, const char *archivoFeeds, int cantUsuarios,
             printf("ERROR: con capacidad %u la Parte 1 y la Parte 2 no coinciden\n", capacidades[posicion]);
     }
 }
+
+/* Lee una linea y la convierte a numero. Devuelve NUMERO_INVALIDO si no es un
+   numero, y 0 si se cerro la entrada (asi los menues terminan en vez de repetirse) */
+int leerNumero()
+{
+    char linea[TAM_LINEA];
+    int numero;
+
+    if(!fgets(linea, TAM_LINEA, stdin))
+        return 0;
+
+    if(sscanf(linea, "%d", &numero) != 1)
+        return NUMERO_INVALIDO;
+
+    return numero;
+}
+
+/* Corre los tres lotes con las mismas capacidades */
+void simularTodo(const unsigned *capacidades, int cantCapacidades)
+{
+    simularCaso("Concentrado", ARCH_CONCENTRADO, USUARIOS_LOTE,
+                capacidades, cantCapacidades, REPETICIONES_LOTE);
+    simularCaso("Disperso", ARCH_DISPERSO, USUARIOS_LOTE,
+                capacidades, cantCapacidades, REPETICIONES_LOTE);
+    simularCaso("Ordenado", ARCH_ORDENADO, USUARIOS_LOTE,
+                capacidades, cantCapacidades, REPETICIONES_LOTE);
+}
+
+/* Capacidades fijas, las mismas para los tres lotes */
+void modoEstatico()
+{
+    unsigned capacidades[] = {250, 500, 1000, 1500, 2000};
+
+    simularTodo(capacidades, CANTIDAD(capacidades));
+}
+
+/* Pide una capacidad entre 1 y MAX_CAPACIDAD. Devuelve 0 si el usuario quiere volver. */
+int pedirCapacidad(const char *texto)
+{
+    int capacidad;
+
+    printf("\n%s (1 a %d, 0 para volver al menu): ", texto, MAX_CAPACIDAD);
+    capacidad = leerNumero();
+
+    while(capacidad < 0 || capacidad > MAX_CAPACIDAD)
+    {
+        printf("Capacidad invalida, ingresa un numero entre 1 y %d (0 para volver al menu): ", MAX_CAPACIDAD);
+        capacidad = leerNumero();
+    }
+
+    return capacidad;
+}
+
+/* El usuario elige la capacidad y se simulan los tres lotes con ella. Despues
+   se le ofrece probar otra, hasta que ingrese 0. */
+void modoDinamico()
+{
+    unsigned capacidades[CANT_CAPACIDADES_DINAMICO];
+    int capacidad = pedirCapacidad("Capacidad de la cache");
+
+    while(capacidad != 0)
+    {
+        capacidades[0] = (unsigned)capacidad;
+
+        simularTodo(capacidades, CANT_CAPACIDADES_DINAMICO);
+
+        capacidad = pedirCapacidad("Otra capacidad");
+    }
+}
+
+int mostrarMenu()
+{
+    printf("\n1 - Modo estatico (todos los lotes, con capacidades fijas)\n");
+    printf("2 - Modo dinamico (elegis la capacidad de la cache)\n");
+    printf("0 - Salir\n");
+    printf("Opcion: ");
+
+    return leerNumero();
+}

@@ -22,9 +22,6 @@
 #define ARCH_CONCENTRADO "feeds_concentrado.bin"
 #define ARCH_DISPERSO "feeds_disperso.bin"
 #define ARCH_ORDENADO "feeds_ordenado.bin"
-#define ARCH_CONCENTRADO_GRANDE "feeds_concentrado_grande.bin"
-#define ARCH_DISPERSO_GRANDE "feeds_disperso_grande.bin"
-#define ARCH_ORDENADO_GRANDE "feeds_ordenado_grande.bin"
 
 #define GEN_OK 1
 #define GEN_ERROR 0
