@@ -1,4 +1,3 @@
-
 #ifndef TDALISTADOBLE_H_INCLUDED
 #define TDALISTADOBLE_H_INCLUDED
 
@@ -10,28 +9,31 @@
 #define SIN_MEMORIA -1
 #define EXITO 1
 
+#ifndef MINIMO
 #define MINIMO(X,Y)( (X)<=(Y)? (X):(Y) )
+#endif
 
-typedef struct sNodo{
+typedef struct sNodo
+{
     void *info;
     size_t tamInfo;
     struct sNodo *ant;
     struct sNodo *sig;
 } tNodo;
 
-typedef tNodo *tListaDoble;
+/* Igual que tCola del apunte de Cola dinamica: dos punteros FIJOS, uno al primero y otro al ultimo */
+typedef struct
+{
+    tNodo *pri;
+    tNodo *ult;
+} tListaDoble;
 
 void crearListaDoble(tListaDoble *p);
-void vaciarListaDoble(tListaDoble *p);
 int esListaDobleVacia(const tListaDoble *p);
-int esListaDobleLlena(const tListaDoble *p, size_t tam);
 int insertarAlInicioListaDoble(tListaDoble *p, const void *d, size_t tam);
-int insertarAlFinalListaDoble(tListaDoble *p, const void *d, size_t tam);
-void mostrarDeIzqADer(const tListaDoble *p, void(*mostrar)(const void *));
-void mostrarDeDerAIzq(const tListaDoble *p, void(*mostrar)(const void *));
-
 int moverAlInicioListaDoble(tListaDoble *p, tNodo *nodo);
 int eliminarNodoListaDoble(tListaDoble *p, tNodo *nodo);
 int sacarUltimoListaDoble(tListaDoble *p, void *d, size_t tam);
+void vaciarListaDoble(tListaDoble *p);
 
 #endif // TDALISTADOBLE_H_INCLUDED
