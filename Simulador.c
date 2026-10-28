@@ -296,9 +296,9 @@ void modoDinamico()
 
 int mostrarMenu()
 {
-    printf("\n1 - Modo estatico (todos los lotes, con capacidades fijas)\n");
-    printf("2 - Modo dinamico (elegis la capacidad de la cache)\n");
-    printf("0 - Salir\n");
+    printf("\n1 - Modo estatico: Lotes con capacidades predefinidas\n");
+    printf("2 - Modo dinamico: Se carga la capacidad deseada.\n");
+    printf("0 - Salir\n\n");
     printf("Opcion: ");
 
     return leerNumero();

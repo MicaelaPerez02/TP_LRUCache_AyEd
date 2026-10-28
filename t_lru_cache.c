@@ -24,38 +24,20 @@ void vaciar_lrucache(tCache *pc)
 
 int agregar_lrucache(tCache *pc, void *d, size_t tam)
 {
-    tLista *p;
-    tNodo *elim;
-    int encontrado=0;
-
     if(!pc)
         return PUNTERO_INVALIDO;
 
-    p=&pc->lista;
+    // Si esta duplicado, lo elimino
+    if( eliminarElementoLista(&pc->lista, d, pc->cmpClaves) == EXITO )
+        pc->ce--;
 
-    while(*p && !encontrado)
-    {
-        if(pc->cmpClaves( (*p)->info, d)==0 )
-        {
-            elim=*p;
-            *p=(*p)->sig;
-
-            free(elim->info);
-            free(elim);
-
-            pc->ce--;
-            encontrado=1;
-        }
-        else
-        {
-            p=&(*p)->sig;
-        }
-    }
-
+    // Inserto el elemento al inicio
     if( insertarAlInicioLista(&pc->lista, d, tam) != EXITO )
         return SIN_MEMORIA;
+
     pc->ce++;
 
+    // Si hay desborde, saco el ultimo
     if(pc->ce > pc->capMax)
     {
         sacarUltimoLista(&pc->lista, NULL, tam);
@@ -67,30 +49,13 @@ int agregar_lrucache(tCache *pc, void *d, size_t tam)
 
 int borrar_lrucache(tCache *pc, void *d)
 {
-    tLista *p;
-    tNodo *elim;
-
     if(!pc)
         return PUNTERO_INVALIDO;
 
-    p=&pc->lista;
-
-    while(*p)
+    if( eliminarElementoLista(&pc->lista, d, pc->cmpClaves) == EXITO )
     {
-        if( pc->cmpClaves((*p)->info, d) == 0 )
-        {
-            elim=*p;
-            *p = elim->sig;
-
-            free(elim->info);
-            free(elim);
-
-            pc->ce--;
-
-            return EXITO;
-        }
-
-        p=&(*p)->sig;
+        pc->ce--;
+        return EXITO;
     }
 
     return NO_ENCONTRADO;
@@ -98,39 +63,18 @@ int borrar_lrucache(tCache *pc, void *d)
 
 int obtener_lrucache(tCache *pc, void *d, size_t tam)
 {
-    tLista *p; // La dirección de la lista, sin el & tengo el primer nodo, no puedo modificar a donde a punta la lista como tal
-    tNodo *aux;
-
     if(!pc)
         return PUNTERO_INVALIDO;
 
-    p=&pc->lista;
-
-    // Mientras tenga nodos (pc->lista)
-    // Y no haya encontrado la clave (*p)->info = pc->lista->info
-    while(*p && pc->cmpClaves( (*p)->info, d) != 0)
+    // Si lo encuentro, lo muevo al inicio de la lista
+    if( moverAlInicioLista(&pc->lista, d, pc->cmpClaves) == EXITO )
     {
-        p = &(*p)->sig; // Puntero a la caja sig. del nodo actual
+        // Copio el dato encontrado
+        memcpy(d, pc->lista->info, MINIMO(tam, pc->lista->tamInfo));
+        return EXITO;
     }
 
-    if(*p) // Si lo encontre
-    {
-        memcpy(d, (*p)->info, MINIMO(tam, (*p)->tamInfo));
-
-        // Desengancho
-        aux=*p;
-        *p=(*p)->sig;
-
-        // Engancho al inicio
-        aux->sig = pc->lista;
-        pc->lista=aux;
-    }
-    else
-    {
-        return NO_ENCONTRADO;
-    }
-
-    return EXITO;
+    return NO_ENCONTRADO;
 }
 
 void recorrer_lrucache(tCache *pc, Accion ac)

@@ -11,7 +11,7 @@ int main()
         semilla = (unsigned)time(NULL);
 
     srand(semilla);
-    ////printf("Semilla: %u\n\n", semilla);
+    printf("Semilla utilizada para la generación de lotes: %u\n\n", semilla);
 
     if(crearArchivoPosteos(ARCH_POSTEOS) == GEN_ERROR
        || crearArchivoFeeds(ARCH_CONCENTRADO, LOTE_CONCENTRADO, USUARIOS_LOTE, POPULARES_CONCENTRADO) == GEN_ERROR

@@ -1,4 +1,5 @@
 #include "TDAArbol.h"
+
 void crearArbolBinBusq(tArbolBinBusq *p)
 {
     *p=NULL;

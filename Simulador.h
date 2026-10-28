@@ -7,15 +7,10 @@
 #include "t_lru_cache_mejorada.h"
 
 #define MOSTRAR_REGISTROS 3
-
-/* 0: la semilla sale de la hora. Cualquier otro valor regenera siempre los mismos lotes */
 #define SEMILLA_FIJA 0
 
 #define CANTIDAD(vec) ((int)(sizeof(vec) / sizeof((vec)[0])))
 
-// Los tres lotes piden la misma cantidad de datos, asi se pueden comparar entre si.
-// Son 2500 usuarios porque el lote ordenado necesita al menos un id propio por acceso:
-// 2500 usuarios * 20 posteos = 50000 accesos, justo la cantidad de posteos del archivo.
 #define USUARIOS_LOTE 2500
 #define POPULARES_CONCENTRADO 2000
 #define REPETICIONES_LOTE 1
@@ -28,9 +23,6 @@
 #define TAM_LINEA 20
 #define NUMERO_INVALIDO -1
 #define CANT_CAPACIDADES_DINAMICO 1
-
-/* Tope de la capacidad que se puede pedir en el modo dinamico: con capacidades
-   muy grandes la simulacion tarda minutos */
 #define MAX_CAPACIDAD 5000
 
 // Modos de la simulacion

@@ -63,3 +63,61 @@ int sacarUltimoLista(tLista *p, void *d, size_t tam)
 
     return EXITO;
 }
+
+
+int moverAlInicioLista(tLista *p, const void *d,  Cmp cmp)
+{
+    tLista *act=p;
+    tNodo *aux;
+
+    if(!*act)
+        return SIN_DATOS;
+
+    while(*act)
+    {
+        if(cmp((*act)->info, d) == 0)
+        {
+            // Desengancho
+            aux=*act;
+            *act=aux->sig;
+
+            // Reengancho adelante
+            aux->sig=*p;
+            *p=aux;
+
+            return EXITO;
+        }
+
+        act=&(*act)->sig;
+    }
+
+    return NO_ENCONTRADO;
+}
+
+int eliminarElementoLista(tLista *p, const void *d, Cmp cmp)
+{
+    tNodo *aux;
+
+    if(!*p)
+        return SIN_DATOS;
+
+    while(*p)
+    {
+        if( cmp((*p)->info, d)==0 )
+        {
+            // Desengancho
+            aux=*p;
+           *p=aux->sig;
+
+            // Elimino
+           free(aux->info);
+           free(aux);
+
+           return EXITO;
+        }
+
+        p=&(*p)->sig;
+    }
+
+    return NO_ENCONTRADO;
+}

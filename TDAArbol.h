@@ -1,12 +1,15 @@
 #ifndef TDAARBOL_H_INCLUDED
 #define TDAARBOL_H_INCLUDED
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #define SIN_MEMORIA -1
 #define SIN_DATOS -2
 #define DUPLICADO -3
 #define EXITO 1
+
 #ifndef MINIMO
 #define MINIMO(X, Y)((X)<=(Y) ? (X) : (Y))
 #endif

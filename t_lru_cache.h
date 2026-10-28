@@ -3,7 +3,6 @@
 
 #include "TDALista.h"
 #define PUNTERO_INVALIDO -4
-#define NO_ENCONTRADO -3
 
 #ifndef CMP_DEFINIDO
 #define CMP_DEFINIDO
@@ -13,8 +12,8 @@ typedef void (*Accion)(const void *);
 
 typedef struct
 {
-    tLista lista; // Puntero al primer nodo (tNodo *)
-    size_t capMax; // Cantidad max de ELEMENTOS
+    tLista lista; // tNodo **
+    size_t capMax; // cant max de ELEMENTOS
     int ce;
     Cmp cmpClaves;
 } tCache;
