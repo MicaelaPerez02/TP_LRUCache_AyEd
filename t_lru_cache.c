@@ -26,19 +26,24 @@ int agregar_lrucache(tCache *pc, void *d, size_t tam)
 {
     if(!pc)
         return PUNTERO_INVALIDO;
+    else if(pc->capMax == 0)
+        return SIN_CAPACIDAD;
 
-    // Si esta duplicado, lo elimino
-    if( eliminarElementoLista(&pc->lista, d, pc->cmpClaves) == EXITO )
-        pc->ce--;
+    /*if( eliminarElementoLista(&pc->lista, d, pc->cmpClaves) == EXITO )
+        pc->ce--;*/
 
-    // Inserto el elemento al inicio
+    // Si esta duplicado, reemplazo la info y lo dejo adelante
+    if( moverAlInicioLista(&pc->lista, d, pc->cmpClaves) == EXITO )
+        return reemplazarInfoPrimeroLista(&pc->lista, d, tam);
+
+    // Sino, inserto el valor al inicio
     if( insertarAlInicioLista(&pc->lista, d, tam) != EXITO )
         return SIN_MEMORIA;
 
     pc->ce++;
 
     // Si hay desborde, saco el ultimo
-    if(pc->ce > pc->capMax)
+    if( (size_t)pc->ce > pc->capMax)
     {
         sacarUltimoLista(&pc->lista, NULL, tam);
         pc->ce--;
@@ -75,22 +80,6 @@ int obtener_lrucache(tCache *pc, void *d, size_t tam)
     }
 
     return NO_ENCONTRADO;
-}
-
-void recorrer_lrucache(tCache *pc, Accion ac)
-{
-    tNodo *p;
-
-    if(!pc)
-        return;
-
-    p=pc->lista;
-
-    while(p)
-    {
-        ac(p->info);
-        p=p->sig;
-    }
 }
 
 int CmpXClave(const void *c1, const void *c2)

@@ -121,3 +121,25 @@ int eliminarElementoLista(tLista *p, const void *d, Cmp cmp)
 
     return NO_ENCONTRADO;
 }
+
+int reemplazarInfoPrimeroLista(tLista *p, const void *d, size_t tam)
+{
+    void *nueInfo;
+
+    if(!*p)
+        return SIN_DATOS;
+
+    if( (*p)->tamInfo!=tam )
+    {
+        nueInfo=realloc((*p)->info, tam);
+        if(!nueInfo)
+            return SIN_MEMORIA; // No pierdo el dato original
+
+        (*p)->info=nueInfo; // Cambio a donde apunta info
+        (*p)->tamInfo=tam;
+    }
+
+    memcpy((*p)->info, d, tam); // Escribo el valor en la dir. de memoria
+
+    return EXITO;
+}

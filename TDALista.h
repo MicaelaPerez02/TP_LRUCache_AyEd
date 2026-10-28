@@ -34,6 +34,6 @@ int insertarAlInicioLista(tLista *p, const void *d, size_t tam);
 int sacarUltimoLista(tLista *p, void *d, size_t tam);
 int moverAlInicioLista(tLista *p, const void *d,  Cmp cmp);
 int eliminarElementoLista(tLista *p, const void *d, Cmp cmp);
-
+int reemplazarInfoPrimeroLista(tLista *p, const void *d, size_t tam);
 
 #endif // TDALISTA_H_INCLUDED
