@@ -51,17 +51,17 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="TDAListaDoble.h" />
+		<Unit filename="TDALruCache.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="TDALruCache.h" />
+		<Unit filename="TDALruCacheMejorada.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="TDALruCacheMejorada.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="t_lru_cache.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="t_lru_cache.h" />
-		<Unit filename="t_lru_cache_mejorada.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="t_lru_cache_mejorada.h" />
 		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

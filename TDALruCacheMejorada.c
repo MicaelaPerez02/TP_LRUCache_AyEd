@@ -1,4 +1,4 @@
-#include "t_lru_cache_mejorada.h"
+#include "TDALruCacheMejorada.h"
 
 void crearLruCacheMejorada(tCacheMejorada *pc, unsigned capMax, Cmp cmp)
 {

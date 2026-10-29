@@ -3,8 +3,8 @@
 
 #include <time.h>
 #include "LotesPrueba.h"
-#include "t_lru_cache.h"
-#include "t_lru_cache_mejorada.h"
+#include "TDALruCache.h"
+#include "TDALruCacheMejorada.h"
 
 #define MOSTRAR_REGISTROS 3
 #define SEMILLA_FIJA 0
