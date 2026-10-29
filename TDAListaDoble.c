@@ -13,6 +13,9 @@ int esListaDobleVacia(const tListaDoble *p)
 
 int insertarAlInicioListaDoble(tListaDoble *p, const void *d, size_t tam)
 {
+    if(!p)
+        return PUNTERO_INVALIDO;
+
     tNodoDoble *nue = malloc(sizeof(tNodoDoble));
 
     if(!nue)
@@ -34,7 +37,7 @@ int insertarAlInicioListaDoble(tListaDoble *p, const void *d, size_t tam)
     if(p->pri)
         p->pri->ant = nue;
     else
-        p->ult = nue;       // la lista estaba vacia: el nuevo es el primero Y el ultimo
+        p->ult = nue; // la lista estaba vacia: el nuevo es el primero Y el ultimo
 
     p->pri = nue;
 
@@ -43,10 +46,10 @@ int insertarAlInicioListaDoble(tListaDoble *p, const void *d, size_t tam)
 
 int eliminarNodoListaDoble(tListaDoble *p, tNodoDoble *nodo)
 {
-    if(!nodo)
-        return SIN_DATOS;
+    if(!p || !nodo)
+        return PUNTERO_INVALIDO;
 
-    /* lo desengancho de la lista: el anterior y el siguiente se "saltean" al nodo */
+    // lo desengancho de la lista
     if(nodo->ant)
         nodo->ant->sig = nodo->sig;
     else
@@ -65,8 +68,8 @@ int eliminarNodoListaDoble(tListaDoble *p, tNodoDoble *nodo)
 
 int moverAlInicioListaDoble(tListaDoble *p, tNodoDoble *nodo)
 {
-    if(!nodo)
-        return SIN_DATOS;
+    if(!p || !nodo)
+        return PUNTERO_INVALIDO;
 
     if(p->pri == nodo)
         return EXITO;           // ya estaba adelante de todo
@@ -90,20 +93,40 @@ int moverAlInicioListaDoble(tListaDoble *p, tNodoDoble *nodo)
 
 int sacarUltimoListaDoble(tListaDoble *p, void *d, size_t tam)
 {
-    tNodoDoble *elim = p->ult;
+    tNodoDoble *elim;
 
+    if(!p)
+        return PUNTERO_INVALIDO;
+
+    elim = p->ult;
     if(!elim)
         return SIN_DATOS;
 
     if(d)
         memcpy(d, elim->info, MINIMO(tam, elim->tamInfo));
 
-    return eliminarNodoListaDoble(p, elim);
+    // Desenganche, el anterior pasa a ser el ultimo
+    if(elim->ant)
+    {
+        elim->ant->sig=elim->sig;
+        p->ult=elim->ant;
+    } else { // Si es el ultimo no tiene siguiente, si no tiene anterior no hay mas nodos
+        p->ult=NULL;
+        p->pri=NULL;
+    }
+
+    free(elim->info);
+    free(elim);
+
+    return EXITO;
 }
 
 void vaciarListaDoble(tListaDoble *p)
 {
     tNodoDoble *elim;
+
+    if(!p)
+        return;
 
     while(p->pri)
     {

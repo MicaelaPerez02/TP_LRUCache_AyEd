@@ -5,9 +5,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define SIN_DATOS -2
-#define SIN_MEMORIA -1
 #define EXITO 1
+#define SIN_MEMORIA -1
+#define SIN_DATOS -2
+#ifndef PUNTERO_INVALIDO
+#define PUNTERO_INVALIDO -4
+#endif
 
 #ifndef MINIMO
 #define MINIMO(X,Y)( (X)<=(Y)? (X):(Y) )
