@@ -8,7 +8,7 @@
 #define DUPLICADO -3
 #define EXITO 1
 #ifndef NO_ENCONTRADO
-#define NO_ENCONTRADO -4
+#define NO_ENCONTRADO -3
 #endif
 
 
