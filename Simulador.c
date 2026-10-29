@@ -3,19 +3,19 @@
 void crearCache(tSimulador *sim, unsigned capacidad)
 {
     if(sim->modo == CACHE_PARTE_1)
-        crear_lrucache(&sim->cache1, capacidad, CmpXClave);
+        crearLruCache(&sim->cache1, capacidad, CmpXClave);
     else if(sim->modo == CACHE_PARTE_2)
-        crear_lrucache_mejorada(&sim->cache2, capacidad, CmpXClave);
+        crearLruCacheMejorada(&sim->cache2, capacidad, CmpXClave);
 }
 
 /* Devuelve 1 si el posteo estaba en la cache (acierto) y 0 si no (fallo) */
 int buscarEnCache(tSimulador *sim, tPosteo *posteo)
 {
     if(sim->modo == CACHE_PARTE_1)
-        return obtener_lrucache(&sim->cache1, posteo, sizeof(tPosteo)) == EXITO;
+        return obtenerLruCache(&sim->cache1, posteo, sizeof(tPosteo)) == EXITO;
 
     if(sim->modo == CACHE_PARTE_2)
-        return obtener_lrucache_mejorada(&sim->cache2, posteo, sizeof(tPosteo)) == EXITO;
+        return obtenerLruCacheMejorada(&sim->cache2, posteo, sizeof(tPosteo)) == EXITO;
 
     return 0;
 }
@@ -23,15 +23,15 @@ int buscarEnCache(tSimulador *sim, tPosteo *posteo)
 void guardarEnCache(tSimulador *sim, tPosteo *posteo)
 {
     if(sim->modo == CACHE_PARTE_1)
-        agregar_lrucache(&sim->cache1, posteo, sizeof(tPosteo));
+        agregarLruCache(&sim->cache1, posteo, sizeof(tPosteo));
     else if(sim->modo == CACHE_PARTE_2)
-        agregar_lrucache_mejorada(&sim->cache2, posteo, sizeof(tPosteo));
+        agregarLruCacheMejorada(&sim->cache2, posteo, sizeof(tPosteo));
 }
 
 unsigned obtenerAltura(tSimulador *sim)
 {
     if(sim->modo == CACHE_PARTE_2)
-        return altura_lrucache_mejorada(&sim->cache2);
+        return alturaLruCacheMejorada(&sim->cache2);
 
     return 0;
 }
@@ -39,9 +39,9 @@ unsigned obtenerAltura(tSimulador *sim)
 void vaciarCache(tSimulador *sim)
 {
     if(sim->modo == CACHE_PARTE_1)
-        vaciar_lrucache(&sim->cache1);
+        vaciarLruCache(&sim->cache1);
     else if(sim->modo == CACHE_PARTE_2)
-        vaciar_lrucache_mejorada(&sim->cache2);
+        vaciarLruCacheMejorada(&sim->cache2);
 }
 
 /* El id del posteo coincide con su numero de registro: acceso directo */
@@ -52,8 +52,7 @@ int leerPosteo(FILE *pfPosteos, int id, tPosteo *posteo)
     return fread(posteo, sizeof(tPosteo), 1, pfPosteos) == 1;
 }
 
-/* Procesa todos los usuarios del lote una vez. El contenido de los posteos no
-   se muestra ni se guarda: solo se cuentan aciertos, fallos y lecturas. */
+
 int simularUnaVez(const char *archivoFeeds, int modo, unsigned capacidad, tResultado *res)
 {
     FILE *pfPosteos = fopen(ARCH_POSTEOS, "rb");

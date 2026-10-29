@@ -1,6 +1,6 @@
 #include "t_lru_cache.h"
 
-void crear_lrucache(tCache *pc, unsigned capMax, Cmp cmp)
+void crearLruCache(tCache *pc, unsigned capMax, Cmp cmp)
 {
     if(!pc)
         return;
@@ -11,7 +11,7 @@ void crear_lrucache(tCache *pc, unsigned capMax, Cmp cmp)
     pc->ce=0;
 }
 
-void vaciar_lrucache(tCache *pc)
+void vaciarLruCache(tCache *pc)
 {
     if(!pc)
         return;
@@ -22,7 +22,7 @@ void vaciar_lrucache(tCache *pc)
     pc->ce=0;
 }
 
-int agregar_lrucache(tCache *pc, void *d, size_t tam)
+int agregarLruCache(tCache *pc, void *d, size_t tam)
 {
     if(!pc)
         return PUNTERO_INVALIDO;
@@ -49,7 +49,7 @@ int agregar_lrucache(tCache *pc, void *d, size_t tam)
     return EXITO;
 }
 
-int borrar_lrucache(tCache *pc, void *d)
+int borrarLruCache(tCache *pc, void *d)
 {
     if(!pc)
         return PUNTERO_INVALIDO;
@@ -63,7 +63,7 @@ int borrar_lrucache(tCache *pc, void *d)
     return NO_ENCONTRADO;
 }
 
-int obtener_lrucache(tCache *pc, void *d, size_t tam)
+int obtenerLruCache(tCache *pc, void *d, size_t tam)
 {
     if(!pc)
         return PUNTERO_INVALIDO;

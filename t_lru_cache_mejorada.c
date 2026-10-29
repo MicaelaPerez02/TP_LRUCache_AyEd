@@ -1,6 +1,6 @@
 #include "t_lru_cache_mejorada.h"
 
-void crear_lrucache_mejorada(tCacheMejorada *pc, unsigned capMax, Cmp cmp)
+void crearLruCacheMejorada(tCacheMejorada *pc, unsigned capMax, Cmp cmp)
 {
     if(!pc)
         return;
@@ -12,7 +12,7 @@ void crear_lrucache_mejorada(tCacheMejorada *pc, unsigned capMax, Cmp cmp)
     pc->ce = 0;
 }
 
-void vaciar_lrucache_mejorada(tCacheMejorada *pc)
+void vaciarLruCacheMejorada(tCacheMejorada *pc)
 {
     if(!pc)
         return;
@@ -24,7 +24,7 @@ void vaciar_lrucache_mejorada(tCacheMejorada *pc)
     pc->ce = 0;
 }
 
-unsigned altura_lrucache_mejorada(tCacheMejorada *pc)
+unsigned alturaLruCacheMejorada(tCacheMejorada *pc)
 {
     if(!pc)
         return 0;
@@ -32,7 +32,7 @@ unsigned altura_lrucache_mejorada(tCacheMejorada *pc)
     return alturaArbolBin(&pc->arbol);
 }
 
-int agregar_lrucache_mejorada(tCacheMejorada *pc, void *d, size_t tam)
+int agregarLruCacheMejorada(tCacheMejorada *pc, void *d, size_t tam)
 {
     tNodoDoble *nodoViejo;
 
@@ -75,7 +75,7 @@ int agregar_lrucache_mejorada(tCacheMejorada *pc, void *d, size_t tam)
     return EXITO;
 }
 
-int obtener_lrucache_mejorada(tCacheMejorada *pc, void *d, size_t tam)
+int obtenerLruCacheMejorada(tCacheMejorada *pc, void *d, size_t tam)
 {
     tNodoDoble *nodo;
 
@@ -94,7 +94,7 @@ int obtener_lrucache_mejorada(tCacheMejorada *pc, void *d, size_t tam)
     return EXITO;
 }
 
-int borrar_lrucache_mejorada(tCacheMejorada *pc, void *d)
+int borrarLruCacheMejorada(tCacheMejorada *pc, void *d)
 {
     tNodoDoble *nodo;
 

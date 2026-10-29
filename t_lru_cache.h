@@ -20,10 +20,10 @@ typedef struct
 
 int CmpXClave(const void *c1, const void *c2);
 
-void crear_lrucache(tCache *pc, unsigned capMax, Cmp cmp);
-int agregar_lrucache(tCache *pc, void *d, size_t tam);
-int obtener_lrucache(tCache *pc, void *d, size_t tam);
-int borrar_lrucache(tCache *pc, void *d);
-void vaciar_lrucache(tCache *pc);
+void crearLruCache(tCache *pc, unsigned capMax, Cmp cmp);
+int agregarLruCache(tCache *pc, void *d, size_t tam);
+int obtenerLruCache(tCache *pc, void *d, size_t tam);
+int borrarLruCache(tCache *pc, void *d);
+void vaciarLruCache(tCache *pc);
 
 #endif // T_LRU_CACHE_H_INCLUDED

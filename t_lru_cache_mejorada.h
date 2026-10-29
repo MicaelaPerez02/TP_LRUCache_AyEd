@@ -33,12 +33,12 @@ typedef struct
     Cmp cmpClaves;
 } tCacheMejorada;
 
-void crear_lrucache_mejorada(tCacheMejorada *pc, unsigned capMax, Cmp cmp);
-int agregar_lrucache_mejorada(tCacheMejorada *pc, void *d, size_t tam);
-int obtener_lrucache_mejorada(tCacheMejorada *pc, void *d, size_t tam);
-int borrar_lrucache_mejorada(tCacheMejorada *pc, void *d);
-void vaciar_lrucache_mejorada(tCacheMejorada *pc);
-unsigned altura_lrucache_mejorada(tCacheMejorada *pc);
+void crearLruCacheMejorada(tCacheMejorada *pc, unsigned capMax, Cmp cmp);
+int agregarLruCacheMejorada(tCacheMejorada *pc, void *d, size_t tam);
+int obtenerLruCacheMejorada(tCacheMejorada *pc, void *d, size_t tam);
+int borrarLruCacheMejorada(tCacheMejorada *pc, void *d);
+void vaciarLruCacheMejorada(tCacheMejorada *pc);
+unsigned alturaLruCacheMejorada(tCacheMejorada *pc);
 
 // Auxiliares que tocan el arbol
 int compararEntradas(const void *entradaBuscada, const void *entradaGuardada, const void *contexto);
