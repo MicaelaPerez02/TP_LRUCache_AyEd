@@ -38,6 +38,8 @@ int agregar_lrucache_mejorada(tCacheMejorada *pc, void *d, size_t tam)
 
     if(!pc)
         return PUNTERO_INVALIDO;
+    else if(pc->capMax == 0)
+        return SIN_CAPACIDAD;
 
     // Si la clave ya existia piso el dato en su nodo y lo llevo al inicio
     nodoViejo = buscarNodoEnArbol(pc, d);

@@ -6,9 +6,8 @@
 #include "TDAListaDoble.h"
 #include "TDAArbol.h"
 
-#ifndef PUNTERO_INVALIDO
+#define SIN_CAPACIDAD -5
 #define PUNTERO_INVALIDO -4
-#endif
 
 #ifndef NO_ENCONTRADO
 #define NO_ENCONTRADO -3
