@@ -39,32 +39,33 @@ int agregar_lrucache_mejorada(tCacheMejorada *pc, void *d, size_t tam)
     if(!pc)
         return PUNTERO_INVALIDO;
 
-    /* 1. Si la clave ya existia, saco el dato viejo (primero del arbol, despues de la lista) */
-    nodoViejo = sacarNodoDelArbol(pc, d);
-
+    // Si la clave ya existia piso el dato en su nodo y lo llevo al inicio
+    nodoViejo = buscarNodoEnArbol(pc, d);
     if(nodoViejo)
     {
-        eliminarNodoListaDoble(&pc->listaDoble, nodoViejo);
-        pc->ce--;
+        if(reemplazarInfoNodoListaDoble(nodoViejo, d, tam) != EXITO)
+            return SIN_MEMORIA;
+
+        moverAlInicioListaDoble(&pc->listaDoble, nodoViejo);
+        return EXITO;
     }
 
-    /* 2. Dato nuevo al inicio de la lista */
+    // Dato nuevo, se inserta en lista y arbol
     if(insertarAlInicioListaDoble(&pc->listaDoble, d, tam) != EXITO)
         return SIN_MEMORIA;
 
-    /* 3. Clave + nodo nuevo al arbol (el nodo nuevo es pri) */
     if(registrarNodoEnArbol(pc, pc->listaDoble.pri) != EXITO)
     {
-        eliminarNodoListaDoble(&pc->listaDoble, pc->listaDoble.pri);    // deshago el paso 2
+        eliminarNodoListaDoble(&pc->listaDoble, pc->listaDoble.pri);
         return SIN_MEMORIA;
     }
 
     pc->ce++;
 
-    /* 4. Desborde: sale el ultimo (primero del arbol, despues de la lista) */
+    // Si hay desborde, saco el ultimo
     if((size_t)pc->ce > pc->capMax)
     {
-        sacarNodoDelArbol(pc, pc->listaDoble.ult->info);   // la clave se lee ANTES de liberar el nodo
+        sacarNodoDelArbol(pc, pc->listaDoble.ult->info);
         sacarUltimoListaDoble(&pc->listaDoble, NULL, 0);
         pc->ce--;
     }
@@ -79,14 +80,14 @@ int obtener_lrucache_mejorada(tCacheMejorada *pc, void *d, size_t tam)
     if(!pc)
         return PUNTERO_INVALIDO;
 
-    nodo = buscarNodoEnArbol(pc, d);   // el arbol solo se CONSULTA: no se modifica
+    nodo = buscarNodoEnArbol(pc, d); // el arbol solo se CONSULTA: no se modifica
 
     if(!nodo)
         return NO_ENCONTRADO;
 
     memcpy(d, nodo->info, MINIMO(tam, nodo->tamInfo));
 
-    moverAlInicioListaDoble(&pc->listaDoble, nodo);     // ahora es el mas reciente
+    moverAlInicioListaDoble(&pc->listaDoble, nodo); // ahora es el mas reciente
 
     return EXITO;
 }
@@ -118,7 +119,7 @@ int compararEntradas(const void *entradaBuscada, const void *entradaGuardada, co
     const tClaveNodo *guardada = entradaGuardada;
     const tCacheMejorada *pc = contexto;
 
-    return pc->cmpClaves(buscada->clave, guardada->clave);
+    return pc->cmpClaves(buscada->clave, guardada->nodo->info);
 }
 
 int registrarNodoEnArbol(tCacheMejorada *pc, tNodoDoble *nodo)

@@ -7,6 +7,11 @@
 #define SIN_DATOS -2
 #define DUPLICADO -3
 #define EXITO 1
+#ifndef NO_ENCONTRADO
+#define NO_ENCONTRADO -4
+#endif
+
+
 #ifndef MINIMO
 #define MINIMO(X, Y)((X)<=(Y) ? (X) : (Y))
 #endif

@@ -123,6 +123,26 @@ int sacarUltimoListaDoble(tListaDoble *p, void *d, size_t tam)
     return EXITO;
 }
 
+int reemplazarInfoNodoListaDoble(tNodoDoble *nodo, const void *d, size_t tam)
+{
+    void *nueInfo;
+
+    if(!nodo)
+        return SIN_DATOS;
+
+    if(nodo->tamInfo != tam)
+    {
+        nueInfo = realloc(nodo->info, tam);
+        if(!nueInfo)
+            return SIN_MEMORIA;
+        nodo->info = nueInfo;
+        nodo->tamInfo = tam;
+    }
+
+    memcpy(nodo->info, d, tam);
+    return EXITO;
+}
+
 void vaciarListaDoble(tListaDoble *p)
 {
     tNodoDoble *elim;

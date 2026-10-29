@@ -36,6 +36,7 @@ int insertarAlInicioListaDoble(tListaDoble *p, const void *d, size_t tam);
 int moverAlInicioListaDoble(tListaDoble *p, tNodoDoble *nodo);
 int eliminarNodoListaDoble(tListaDoble *p, tNodoDoble *nodo);
 int sacarUltimoListaDoble(tListaDoble *p, void *d, size_t tam);
+int reemplazarInfoNodoListaDoble(tNodoDoble *nodo, const void *d, size_t tam);
 void vaciarListaDoble(tListaDoble *p);
 
 #endif // TDALISTADOBLE_H_INCLUDED

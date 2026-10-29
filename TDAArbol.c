@@ -98,10 +98,10 @@ int eliminarRaizArbolBinBusq(tArbolBinBusq *p)
            mayorNodoArbolBinBusq(&(*p)->izq) :
            menorNodoArbolBinBusq(&(*p)->der);
 
-    elim= *remp;
+    elim=*remp;
     (*p)->info = elim->info;
     (*p)->tamInfo = elim->tamInfo;
-    *remp = elim->izq?elim->izq:elim->der;
+    *remp = elim->izq?elim->izq:elim->der; // Si tenia hijo (max 1 pq es el ultimo), lo enlazo con su nuevo padre
     free(elim);
 
     return EXITO;
@@ -110,7 +110,7 @@ int eliminarRaizArbolBinBusq(tArbolBinBusq *p)
 int eliminarRecArbolBinBusq(tArbolBinBusq *p, void *d, size_t tam, CmpConContexto cmp, const void *contexto)
 {
     if(! (p = buscarRecElemArbolBinBusq(p, d, cmp, contexto)) )
-        return 0;
+        return NO_ENCONTRADO;
 
     memcpy(d, (*p)->info, MINIMO(tam, (*p)->tamInfo) );
 
@@ -121,6 +121,7 @@ void vaciarArbolBinBusq(tArbolBinBusq *p)
 {
     if(*p)
     {
+        // Es un postorden I,D,R
         vaciarArbolBinBusq( &(*p)->izq );
         vaciarArbolBinBusq( &(*p)->der );
         free( (*p)->info );
