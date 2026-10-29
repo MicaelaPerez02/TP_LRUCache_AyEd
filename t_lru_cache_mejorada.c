@@ -40,7 +40,7 @@ int agregar_lrucache_mejorada(tCacheMejorada *pc, void *d, size_t tam)
         return PUNTERO_INVALIDO;
 
     /* 1. Si la clave ya existia, saco el dato viejo (primero del arbol, despues de la lista) */
-    nodoViejo = sacarClaveDelArbol(pc, d);
+    nodoViejo = sacarNodoDelArbol(pc, d);
 
     if(nodoViejo)
     {
@@ -53,7 +53,7 @@ int agregar_lrucache_mejorada(tCacheMejorada *pc, void *d, size_t tam)
         return SIN_MEMORIA;
 
     /* 3. Clave + nodo nuevo al arbol (el nodo nuevo es pri) */
-    if(insertarClaveEnArbol(pc, pc->listaDoble.pri) != EXITO)
+    if(registrarNodoEnArbol(pc, pc->listaDoble.pri) != EXITO)
     {
         eliminarNodoListaDoble(&pc->listaDoble, pc->listaDoble.pri);    // deshago el paso 2
         return SIN_MEMORIA;
@@ -64,7 +64,7 @@ int agregar_lrucache_mejorada(tCacheMejorada *pc, void *d, size_t tam)
     /* 4. Desborde: sale el ultimo (primero del arbol, despues de la lista) */
     if((size_t)pc->ce > pc->capMax)
     {
-        sacarClaveDelArbol(pc, pc->listaDoble.ult->info);   // la clave se lee ANTES de liberar el nodo
+        sacarNodoDelArbol(pc, pc->listaDoble.ult->info);   // la clave se lee ANTES de liberar el nodo
         sacarUltimoListaDoble(&pc->listaDoble, NULL, 0);
         pc->ce--;
     }
@@ -79,7 +79,7 @@ int obtener_lrucache_mejorada(tCacheMejorada *pc, void *d, size_t tam)
     if(!pc)
         return PUNTERO_INVALIDO;
 
-    nodo = buscarNodoPorClave(pc, d);   // el arbol solo se CONSULTA: no se modifica
+    nodo = buscarNodoEnArbol(pc, d);   // el arbol solo se CONSULTA: no se modifica
 
     if(!nodo)
         return NO_ENCONTRADO;
@@ -98,7 +98,7 @@ int borrar_lrucache_mejorada(tCacheMejorada *pc, void *d)
     if(!pc)
         return PUNTERO_INVALIDO;
 
-    nodo = sacarClaveDelArbol(pc, d);
+    nodo = sacarNodoDelArbol(pc, d);
 
     if(!nodo)
         return NO_ENCONTRADO;
@@ -109,36 +109,37 @@ int borrar_lrucache_mejorada(tCacheMejorada *pc, void *d)
     return EXITO;
 }
 
+
 /* ---------------------------- auxiliares del arbol ---------------------------- */
 
-int compararClaveNodo(const void *a, const void *b)
+int compararEntradas(const void *entradaBuscada, const void *entradaGuardada, const void *contexto)
 {
-    const tBusqueda *busq = a;
-    const tClaveNodo *guardada = b;
+    const tClaveNodo *buscada = entradaBuscada;
+    const tClaveNodo *guardada = entradaGuardada;
+    const tCacheMejorada *pc = contexto;
 
-    return busq->cmp(busq->entrada.clave, guardada->clave);
+    return pc->cmpClaves(buscada->clave, guardada->clave);
 }
 
-int insertarClaveEnArbol(tCacheMejorada *pc, tNodoDoble *nodo)
+int registrarNodoEnArbol(tCacheMejorada *pc, tNodoDoble *nodo)
 {
-    tBusqueda busq;
+    tClaveNodo entrada;
 
-    busq.entrada.clave = nodo->info;
-    busq.entrada.nodo = nodo;
-    busq.cmp = pc->cmpClaves;
+    entrada.clave = nodo->info;
+    entrada.nodo = nodo;
 
-    return insertarRecArbolBinBusq(&pc->arbol, &busq, sizeof(tClaveNodo), compararClaveNodo);
+    return insertarRecArbolBinBusq(&pc->arbol, &entrada, sizeof(tClaveNodo), compararEntradas, pc);
 }
 
-tNodoDoble *buscarNodoPorClave(tCacheMejorada *pc, const void *clave)
+tNodoDoble *buscarNodoEnArbol(tCacheMejorada *pc, const void *clave)
 {
-    tBusqueda busq;
+    tClaveNodo entrada;
     tArbolBinBusq *caja;
 
-    busq.entrada.clave = clave;     // para buscar solo hacen falta la clave y el cmp (nodo no se usa)
-    busq.cmp = pc->cmpClaves;
+    entrada.clave = clave;      // para buscar solo importa la clave
+    entrada.nodo = NULL;
 
-    caja = buscarRecElemArbolBinBusq(&pc->arbol, &busq, compararClaveNodo);
+    caja = buscarRecElemArbolBinBusq(&pc->arbol, &entrada, compararEntradas, pc);
 
     if(!caja)
         return NULL;
@@ -146,16 +147,16 @@ tNodoDoble *buscarNodoPorClave(tCacheMejorada *pc, const void *clave)
     return ((tClaveNodo *)(*caja)->info)->nodo;
 }
 
-tNodoDoble *sacarClaveDelArbol(tCacheMejorada *pc, const void *clave)
+tNodoDoble *sacarNodoDelArbol(tCacheMejorada *pc, const void *clave)
 {
-    tBusqueda busq;
+    tClaveNodo entrada;
     tArbolBinBusq *caja;
     tNodoDoble *nodo;
 
-    busq.entrada.clave = clave;
-    busq.cmp = pc->cmpClaves;
+    entrada.clave = clave;
+    entrada.nodo = NULL;
 
-    caja = buscarRecElemArbolBinBusq(&pc->arbol, &busq, compararClaveNodo);
+    caja = buscarRecElemArbolBinBusq(&pc->arbol, &entrada, compararEntradas, pc);
 
     if(!caja)
         return NULL;

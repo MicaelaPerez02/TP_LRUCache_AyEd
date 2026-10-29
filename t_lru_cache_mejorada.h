@@ -14,17 +14,16 @@
 #define NO_ENCONTRADO -3
 #endif
 
+#ifndef CMP_DEFINIDO
+#define CMP_DEFINIDO
+typedef int (*Cmp)(const void *, const void *);
+#endif
+
 typedef struct
 {
     const void *clave;
     tNodoDoble *nodo;
 } tClaveNodo;
-
-typedef struct
-{
-    tClaveNodo entrada;
-    Cmp cmp;
-} tBusqueda;
 
 typedef struct
 {
@@ -43,9 +42,9 @@ void vaciar_lrucache_mejorada(tCacheMejorada *pc);
 unsigned altura_lrucache_mejorada(tCacheMejorada *pc);
 
 // Auxiliares que tocan el arbol
-int compararClaveNodo(const void *a, const void *b);
-int insertarClaveEnArbol(tCacheMejorada *pc, tNodoDoble *nodo);
-tNodoDoble *buscarNodoPorClave(tCacheMejorada *pc, const void *clave);
-tNodoDoble *sacarClaveDelArbol(tCacheMejorada *pc, const void *clave);
+int compararEntradas(const void *entradaBuscada, const void *entradaGuardada, const void *contexto);
+int registrarNodoEnArbol(tCacheMejorada *pc, tNodoDoble *nodo);
+tNodoDoble *buscarNodoEnArbol(tCacheMejorada *pc, const void *clave);
+tNodoDoble *sacarNodoDelArbol(tCacheMejorada *pc, const void *clave);
 
 #endif // T_LRU_CACHE_MEJORADA_H_INCLUDED

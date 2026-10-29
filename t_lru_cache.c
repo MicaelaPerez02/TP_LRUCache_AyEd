@@ -29,9 +29,6 @@ int agregar_lrucache(tCache *pc, void *d, size_t tam)
     else if(pc->capMax == 0)
         return SIN_CAPACIDAD;
 
-    /*if( eliminarElementoLista(&pc->lista, d, pc->cmpClaves) == EXITO )
-        pc->ce--;*/
-
     // Si esta duplicado, reemplazo la info y lo dejo adelante
     if( moverAlInicioLista(&pc->lista, d, pc->cmpClaves) == EXITO )
         return reemplazarInfoPrimeroLista(&pc->lista, d, tam);
