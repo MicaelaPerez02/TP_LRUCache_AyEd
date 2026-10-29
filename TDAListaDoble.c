@@ -110,7 +110,9 @@ int sacarUltimoListaDoble(tListaDoble *p, void *d, size_t tam)
     {
         elim->ant->sig=elim->sig;
         p->ult=elim->ant;
-    } else { // Si es el ultimo no tiene siguiente, si no tiene anterior no hay mas nodos
+    }
+    else     // Si es el ultimo no tiene siguiente, si no tiene anterior no hay mas nodos
+    {
         p->ult=NULL;
         p->pri=NULL;
     }

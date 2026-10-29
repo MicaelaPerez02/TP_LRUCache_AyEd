@@ -53,10 +53,10 @@ tNodoArbol **buscarRecElemArbolBinBusq(tArbolBinBusq *p, const void *d, CmpConCo
         return buscarRecElemArbolBinBusq(&(*p)->der, d, cmp, contexto);
     }
 
-    return (tNodoArbol **)p;
+    return p;
 }
 
-tNodoArbol **mayorNodoArbolBinBusq(const tArbolBinBusq *p)
+tNodoArbol **mayorNodoArbolBinBusq(tArbolBinBusq *p)
 {
     if(!*p)
         return NULL;
@@ -64,10 +64,10 @@ tNodoArbol **mayorNodoArbolBinBusq(const tArbolBinBusq *p)
     while( (*p)->der )
         p=&(*p)->der;
 
-    return (tNodoArbol **)p;
+    return p;
 }
 
-tNodoArbol **menorNodoArbolBinBusq(const tArbolBinBusq *p)
+tNodoArbol **menorNodoArbolBinBusq(tArbolBinBusq *p)
 {
     if(!*p)
         return NULL;
@@ -75,7 +75,7 @@ tNodoArbol **menorNodoArbolBinBusq(const tArbolBinBusq *p)
     while( (*p)->izq )
         p=&(*p)->izq;
 
-    return (tNodoArbol **)p;
+    return p;
 }
 
 int eliminarRaizArbolBinBusq(tArbolBinBusq *p)

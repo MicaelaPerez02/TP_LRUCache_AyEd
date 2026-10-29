@@ -26,8 +26,8 @@ int insertarRecArbolBinBusq(tArbolBinBusq *p, const void *d, size_t tam, CmpConC
 int eliminarRaizArbolBinBusq(tArbolBinBusq *p);
 int eliminarRecArbolBinBusq(tArbolBinBusq *p, void *d, size_t tam, CmpConContexto cmp, const void *contexto);
 tNodoArbol** buscarRecElemArbolBinBusq(tArbolBinBusq *p, const void *d, CmpConContexto cmp, const void *contexto);
-tNodoArbol **menorNodoArbolBinBusq(const tArbolBinBusq *p);
-tNodoArbol **mayorNodoArbolBinBusq(const tArbolBinBusq *p);
+tNodoArbol **menorNodoArbolBinBusq(tArbolBinBusq *p);
+tNodoArbol **mayorNodoArbolBinBusq(tArbolBinBusq *p);
 unsigned alturaArbolBin(tArbolBinBusq *p);
 
 #endif
