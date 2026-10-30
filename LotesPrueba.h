@@ -19,9 +19,9 @@
 
 // Nombre archivos
 #define ARCH_POSTEOS "posteos.bin"
-#define ARCH_CONCENTRADO "feeds_concentrado.bin"
-#define ARCH_DISPERSO "feeds_disperso.bin"
-#define ARCH_ORDENADO "feeds_ordenado.bin"
+#define ARCH_CONCENTRADO "feedsConcentrado.bin"
+#define ARCH_DISPERSO "feedsDisperso.bin"
+#define ARCH_ORDENADO "feedsOrdenado.bin"
 
 #define GEN_OK 1
 #define GEN_ERROR 0
