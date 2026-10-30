@@ -8,7 +8,6 @@ void crearCache(tSimulador *sim, unsigned capacidad)
         crearLruCacheMejorada(&sim->cache2, capacidad, CmpXClave);
 }
 
-/* Devuelve 1 si el posteo estaba en la cache (acierto) y 0 si no (fallo) */
 int buscarEnCache(tSimulador *sim, tPosteo *posteo)
 {
     if(sim->modo == CACHE_PARTE_1)
@@ -44,9 +43,9 @@ void vaciarCache(tSimulador *sim)
         vaciarLruCacheMejorada(&sim->cache2);
 }
 
-/* El id del posteo coincide con su numero de registro: acceso directo */
 int leerPosteo(FILE *pfPosteos, int id, tPosteo *posteo)
 {
+    // Esto se puede hacer por el acceso directo (el id coincide con el nro de registro)
     fseek(pfPosteos, (long)id * (long)sizeof(tPosteo), SEEK_SET);
 
     return fread(posteo, sizeof(tPosteo), 1, pfPosteos) == 1;
@@ -55,12 +54,12 @@ int leerPosteo(FILE *pfPosteos, int id, tPosteo *posteo)
 
 int simularUnaVez(const char *archivoFeeds, int modo, unsigned capacidad, tResultado *res)
 {
-    FILE *pfPosteos = fopen(ARCH_POSTEOS, "rb");
-    FILE *pfFeeds = fopen(archivoFeeds, "rb");
     tUsuarioFeed usuarioFeed;
     tPosteo posteo;
     tSimulador sim;
-    int posicion;
+    const int *idPosteo;
+    FILE *pfPosteos = fopen(ARCH_POSTEOS, "rb");
+    FILE *pfFeeds = fopen(archivoFeeds, "rb");
 
     if(!pfPosteos || !pfFeeds)
     {
@@ -73,8 +72,8 @@ int simularUnaVez(const char *archivoFeeds, int modo, unsigned capacidad, tResul
         return SIM_ERROR;
     }
 
-    /* Sin buffer: cada fseek + fread va a buscar el posteo al archivo, y no a una
-       copia que FILE ya tenia en memoria */
+    // Configuracion para desactivar el buffer y que cada fseek + fread vaya a buscar el posteo al archivo, y no a una
+    // copia que FILE ya tenia en memoria
     setvbuf(pfPosteos, NULL, _IONBF, 0);
 
     sim.modo = modo;
@@ -86,9 +85,9 @@ int simularUnaVez(const char *archivoFeeds, int modo, unsigned capacidad, tResul
 
     while(fread(&usuarioFeed, sizeof(tUsuarioFeed), 1, pfFeeds) == 1)
     {
-        for(posicion = 0; posicion < POSTEOS_POR_FEED; posicion++)
+        for(idPosteo = usuarioFeed.feed; idPosteo < usuarioFeed.feed + POSTEOS_POR_FEED; idPosteo++)
         {
-            posteo.id = usuarioFeed.feed[posicion];
+            posteo.id = *idPosteo;
 
             if(buscarEnCache(&sim, &posteo))
                 res->aciertos++;
@@ -96,7 +95,7 @@ int simularUnaVez(const char *archivoFeeds, int modo, unsigned capacidad, tResul
             {
                 res->fallos++;
 
-                if(leerPosteo(pfPosteos, usuarioFeed.feed[posicion], &posteo))
+                if(leerPosteo(pfPosteos, *idPosteo, &posteo))
                 {
                     res->lecturas++;
                     guardarEnCache(&sim, &posteo);
@@ -114,12 +113,11 @@ int simularUnaVez(const char *archivoFeeds, int modo, unsigned capacidad, tResul
     return SIM_OK;
 }
 
-/* Repite la simulacion y promedia el tiempo, porque una sola corrida puede
-   durar menos que la resolucion de clock() */
+// Funcion para medir el tiempo de la simulacion promediando
 int simularVariasVeces(const char *archivoFeeds, int modo, unsigned capacidad, int repeticiones, tResultado *res)
 {
-    clock_t inicio = clock();
     int repeticion;
+    clock_t inicio = clock(); // Devuelve el tiempo de CPU utilizado por el programa
 
     for(repeticion = 0; repeticion < repeticiones; repeticion++)
     {
@@ -155,10 +153,6 @@ void mostrarEncabezado()
     mostrarSeparador();
 }
 
-/* Una fila de la tabla. Sin cache no tiene capacidad, aciertos ni fallos (todos
-   los posteos se leen del archivo). Los tiempos por usuario y por posteo salen
-   del promedio del total. La altura solo existe en la Parte 2 y la diferencia
-   P1-P2 se muestra en la fila de la Parte 2. */
 void mostrarFila(int modo, unsigned capacidad, const tResultado *res, int cantUsuarios, double diferencia)
 {
     int cantPosteos = cantUsuarios * POSTEOS_POR_FEED;
@@ -182,17 +176,16 @@ void mostrarFila(int modo, unsigned capacidad, const tResultado *res, int cantUs
         printf("%6s | %9s |\n", "-", "-");
 }
 
-void simularCaso(const char *titulo, const char *archivoFeeds, int cantUsuarios,
-                 const unsigned *capacidades, int cantCapacidades, int repeticiones)
+void simularCaso(const char *titulo, const char *archivoFeeds, int cantUsuarios, const unsigned *capacidades, int cantCapacidades, int repeticiones)
 {
     tResultado sinCache;
     tResultado parte1;
     tResultado parte2;
-    int posicion;
+    const unsigned *capacidad;
 
     printf("\n=== %s: %d usuarios, %d posteos pedidos ===\n", titulo, cantUsuarios, cantUsuarios * POSTEOS_POR_FEED);
 
-    /* corrida de calentamiento: el archivo queda cargado en la memoria del sistema operativo */
+    // Cargo una vez el archivo
     simularUnaVez(archivoFeeds, SIN_CACHE, 0, &sinCache);
 
     if(simularVariasVeces(archivoFeeds, SIN_CACHE, 0, repeticiones, &sinCache) == SIM_ERROR)
@@ -205,27 +198,45 @@ void simularCaso(const char *titulo, const char *archivoFeeds, int cantUsuarios,
     mostrarFila(SIN_CACHE, 0, &sinCache, cantUsuarios, 0);
     mostrarSeparador();
 
-    for(posicion = 0; posicion < cantCapacidades; posicion++)
+    for(capacidad = capacidades; capacidad < capacidades + cantCapacidades; capacidad++)
     {
-        if(simularVariasVeces(archivoFeeds, CACHE_PARTE_1, capacidades[posicion], repeticiones, &parte1) == SIM_ERROR
-           || simularVariasVeces(archivoFeeds, CACHE_PARTE_2, capacidades[posicion], repeticiones, &parte2) == SIM_ERROR)
+        if(simularVariasVeces(archivoFeeds, CACHE_PARTE_1, *capacidad, repeticiones, &parte1) == SIM_ERROR
+           || simularVariasVeces(archivoFeeds, CACHE_PARTE_2, *capacidad, repeticiones, &parte2) == SIM_ERROR)
         {
             printf("Error al abrir los archivos de %s\n", titulo);
             return;
         }
 
-        mostrarFila(CACHE_PARTE_1, capacidades[posicion], &parte1, cantUsuarios, 0);
-        mostrarFila(CACHE_PARTE_2, capacidades[posicion], &parte2, cantUsuarios, parte1.segundos - parte2.segundos);
+        mostrarFila(CACHE_PARTE_1, *capacidad, &parte1, cantUsuarios, 0);
+        mostrarFila(CACHE_PARTE_2, *capacidad, &parte2, cantUsuarios, parte1.segundos - parte2.segundos);
         mostrarSeparador();
 
-        /* las dos caches son LRU: tienen que dar los mismos aciertos y fallos */
+        // Las dos caches son LRU: tienen que dar los mismos aciertos y fallos
         if(parte1.aciertos != parte2.aciertos || parte1.fallos != parte2.fallos)
-            printf("ERROR: con capacidad %u la Parte 1 y la Parte 2 no coinciden\n", capacidades[posicion]);
+            printf("ERROR: con capacidad %u la Parte 1 y la Parte 2 no coinciden\n", *capacidad);
+
     }
 }
 
-/* Lee una linea y la convierte a numero. Devuelve NUMERO_INVALIDO si no es un
-   numero, y 0 si se cerro la entrada (asi los menues terminan en vez de repetirse) */
+unsigned pedirSemilla()
+{
+    int semilla;
+
+    printf("Semilla para generar los lotes (%d para usar la hora): ", SEMILLA_HORA);
+    semilla = leerNumero();
+
+    while(semilla < 0)
+    {
+        printf("Semilla invalida, ingresa un numero positivo (%d para usar la hora): ", SEMILLA_HORA);
+        semilla = leerNumero();
+    }
+
+    if(semilla == SEMILLA_HORA)
+        return (unsigned)time(NULL);
+
+    return (unsigned)semilla;
+}
+
 int leerNumero()
 {
     char linea[TAM_LINEA];
@@ -240,7 +251,6 @@ int leerNumero()
     return numero;
 }
 
-/* Corre los tres lotes con las mismas capacidades */
 void simularTodo(const unsigned *capacidades, int cantCapacidades)
 {
     simularCaso("Concentrado", ARCH_CONCENTRADO, USUARIOS_LOTE,
@@ -251,7 +261,6 @@ void simularTodo(const unsigned *capacidades, int cantCapacidades)
                 capacidades, cantCapacidades, REPETICIONES_LOTE);
 }
 
-/* Capacidades fijas, las mismas para los tres lotes */
 void modoEstatico()
 {
     unsigned capacidades[] = {250, 500, 1000, 1500, 2000};
@@ -259,7 +268,6 @@ void modoEstatico()
     simularTodo(capacidades, CANTIDAD(capacidades));
 }
 
-/* Pide una capacidad entre 1 y MAX_CAPACIDAD. Devuelve 0 si el usuario quiere volver. */
 int pedirCapacidad(const char *texto)
 {
     int capacidad;
@@ -276,8 +284,6 @@ int pedirCapacidad(const char *texto)
     return capacidad;
 }
 
-/* El usuario elige la capacidad y se simulan los tres lotes con ella. Despues
-   se le ofrece probar otra, hasta que ingrese 0. */
 void modoDinamico()
 {
     unsigned capacidades[CANT_CAPACIDADES_DINAMICO];
@@ -285,8 +291,7 @@ void modoDinamico()
 
     while(capacidad != 0)
     {
-        capacidades[0] = (unsigned)capacidad;
-
+        *capacidades = (unsigned)capacidad;
         simularTodo(capacidades, CANT_CAPACIDADES_DINAMICO);
 
         capacidad = pedirCapacidad("Otra capacidad");

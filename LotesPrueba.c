@@ -2,24 +2,33 @@
 
 int aleatorioHasta(int limite)
 {
+    // Usamos dos rand porque tenemos 50mil registros, el rand de windows solo llega a 32767
     int numero = (rand() % TOPE_RAND) * TOPE_RAND + rand() % TOPE_RAND;
+
+    if(limite <= 0)
+        return 0;
 
     return numero % limite;
 }
 
 int estaEnVector(const int *vec, int cantidad, int id)
 {
-    int posicion;
+    const int *fin = vec + cantidad;
 
-    for(posicion = 0; posicion < cantidad; posicion++)
-        if(vec[posicion] == id)
+    while(vec < fin)
+    {
+        if(*vec == id)
             return 1;
+
+        vec++;
+    }
 
     return 0;
 }
 
 void llenarVectorDistinto(int *vec, int cantidad)
 {
+    int *act = vec;
     int cargados = 0;
     int id;
 
@@ -27,9 +36,10 @@ void llenarVectorDistinto(int *vec, int cantidad)
     {
         id = aleatorioHasta(CANT_POSTEOS);
 
-        if(!estaEnVector(vec, cargados, id))
+        if(!estaEnVector(vec, cargados, id)) // Validamos que sean diferentes
         {
-            vec[cargados] = id;
+            *act = id;
+            act++;
             cargados++;
         }
     }
@@ -37,19 +47,21 @@ void llenarVectorDistinto(int *vec, int cantidad)
 
 void llenarFeedConcentrado(int *feed, const int *populares, int cantPopulares)
 {
+    int *act = feed;
     int cargados = 0;
     int id;
 
     while(cargados < POSTEOS_POR_FEED)
     {
-        if(aleatorioHasta(PORCENTAJE_MAXIMO) < PORCENTAJE_POPULARES)
-            id = populares[aleatorioHasta(cantPopulares)];
+        if(aleatorioHasta(PORCENTAJE_MAXIMO) < PORCENTAJE_POPULARES) // Si es menor que 90
+            id = *(populares + aleatorioHasta(cantPopulares)); // Popular al azar
         else
-            id = aleatorioHasta(CANT_POSTEOS);
+            id = aleatorioHasta(CANT_POSTEOS); // Sino cualquiera
 
         if(!estaEnVector(feed, cargados, id))
         {
-            feed[cargados] = id;
+            *act = id;
+            act++;
             cargados++;
         }
     }
@@ -81,7 +93,7 @@ int crearArchivoPosteos(const char *nombreArchivo)
 
     for(numeroRegistro = 0; numeroRegistro < CANT_POSTEOS; numeroRegistro++)
     {
-        posteo.id = numeroRegistro; /* el id coincide con el numero de registro */
+        posteo.id = numeroRegistro;
         sprintf(posteo.texto, "Posteo numero %d: texto de prueba para la simulacion", numeroRegistro);
 
         if(fwrite(&posteo, sizeof(tPosteo), 1, pf) != 1)
@@ -102,10 +114,16 @@ int crearArchivoFeeds(const char *nombreArchivo, int tipoLote, int cantUsuarios,
     int populares[MAX_POPULARES];
     int indiceUsuario;
 
+    if(cantUsuarios <= 0)
+        return GEN_ERROR;
+
     if(cantPopulares > MAX_POPULARES)
         return GEN_ERROR;
 
-    /* en el ordenado cada acceso necesita al menos un id propio */
+    if(tipoLote == LOTE_CONCENTRADO && cantPopulares <= 0)
+        return GEN_ERROR;
+
+    // en el ordenado cada acceso necesita al menos un id propio
     if(tipoLote == LOTE_ORDENADO && cantUsuarios * POSTEOS_POR_FEED > CANT_POSTEOS)
         return GEN_ERROR;
 

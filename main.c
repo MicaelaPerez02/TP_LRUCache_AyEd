@@ -1,14 +1,10 @@
 #include "Simulador.h"
 #include "LotesPrueba.h"
-#include <time.h>
 
 int main()
 {
-    unsigned semilla = SEMILLA_FIJA;
+    unsigned semilla = pedirSemilla();
     int opcion;
-
-    if(semilla == 0)
-        semilla = (unsigned)time(NULL);
 
     srand(semilla);
     printf("Semilla utilizada para la generación de lotes: %u\n\n", semilla);
@@ -33,8 +29,6 @@ int main()
 
     //printf("\nPrimeros feeds de %s:\n", ARCH_ORDENADO);
     //mostrarArchivoFeeds(ARCH_ORDENADO, MOSTRAR_REGISTROS);
-
-    //printf("\nArchivos generados.\n");
 
     printf("\n=========SIMULADOR=========\n");
 

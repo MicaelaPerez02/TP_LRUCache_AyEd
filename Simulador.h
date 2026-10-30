@@ -8,6 +8,7 @@
 
 #define MOSTRAR_REGISTROS 3
 #define SEMILLA_FIJA 0
+#define SEMILLA_HORA 0
 
 #define CANTIDAD(vec) ((int)(sizeof(vec) / sizeof((vec)[0])))
 
@@ -73,11 +74,13 @@ void simularCaso(const char *titulo, const char *archivoFeeds, int cantUsuarios,
                  const unsigned *capacidades, int cantCapacidades, int repeticiones);
 
 // Menu
+unsigned pedirSemilla(void);
 int leerNumero(void);
 void simularTodo(const unsigned *capacidades, int cantCapacidades);
 void modoEstatico(void);
 int pedirCapacidad(const char *texto);
 void modoDinamico(void);
 int mostrarMenu(void);
+
 
 #endif // SIMULADOR_H_INCLUDED
