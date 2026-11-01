@@ -123,7 +123,7 @@ int crearArchivoFeeds(const char *nombreArchivo, int tipoLote, int cantUsuarios,
     if(tipoLote == LOTE_CONCENTRADO && cantPopulares <= 0)
         return GEN_ERROR;
 
-    // en el ordenado cada acceso necesita al menos un id propio
+    // En el ordenado cada acceso necesita al menos un id propio
     if(tipoLote == LOTE_ORDENADO && cantUsuarios * POSTEOS_POR_FEED > CANT_POSTEOS)
         return GEN_ERROR;
 
@@ -132,7 +132,10 @@ int crearArchivoFeeds(const char *nombreArchivo, int tipoLote, int cantUsuarios,
     if(!pf)
         return GEN_ERROR;
 
-    llenarVectorDistinto(populares, cantPopulares);
+    if(tipoLote == LOTE_CONCENTRADO)
+    {
+        llenarVectorDistinto(populares, cantPopulares);
+    }
 
     for(indiceUsuario = 0; indiceUsuario < cantUsuarios; indiceUsuario++)
     {
